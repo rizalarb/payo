@@ -32,6 +32,31 @@ export default function ScanQris() {
     );
   }
 
+  // Web fallback: camera scanner only works on native devices
+  if (Platform.OS === 'web') {
+    return (
+      <SafeAreaView style={styles.root} edges={['top']} testID="scan-qris-screen">
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} testID="back-btn">
+            <ChevronLeft color="#fff" size={24} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Scan QRIS</Text>
+          <View style={{ width: 40 }} />
+        </View>
+        <View style={styles.permissionBox}>
+          <View style={styles.permIconWrap}>
+            <ScanLine color={COLORS.primary} size={48} strokeWidth={1.6} />
+          </View>
+          <Text style={styles.permTitle}>Pemindai Tersedia di Perangkat</Text>
+          <Text style={styles.permSub}>Pemindai QRIS hanya berjalan pada perangkat (Expo Go / build native). Buka pada HP Anda untuk mencoba.</Text>
+          <TouchableOpacity style={styles.permBtn} onPress={() => router.back()} testID="back-from-web-btn">
+            <Text style={styles.permBtnText}>Kembali</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   if (!permission.granted) {
     return (
       <SafeAreaView style={styles.root} edges={['top']} testID="scan-qris-screen">
