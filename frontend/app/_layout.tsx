@@ -11,9 +11,9 @@ export default function RootLayout() {
         <Stack.Screen name="transaction-detail" options={{ presentation: 'card' }} />
         <Stack.Screen name="all-transactions" options={{ presentation: 'card' }} />
         <Stack.Screen name="transfer" options={{ presentation: 'card' }} />
+        <Stack.Screen name="withdraw" options={{ presentation: 'card' }} />
         <Stack.Screen name="input-manual" options={{ presentation: 'card' }} />
         <Stack.Screen name="scan-qris" options={{ presentation: 'card' }} />
-        <Stack.Screen name="static-qris" options={{ presentation: 'transparentModal', animation: 'fade' }} />
       </Stack>
     </SafeAreaProvider>
   );

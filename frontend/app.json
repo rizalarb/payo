@@ -39,6 +39,12 @@
         {
           "cameraPermission": "Pindai QRIS untuk pembayaran cepat"
         }
+      ],
+      [
+        "expo-av",
+        {
+          "microphonePermission": "PAYO membutuhkan mikrofon untuk perintah suara transfer & withdraw."
+        }
       ]
     ],
     "experiments": {

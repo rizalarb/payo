@@ -1,45 +1,37 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  ActivityIndicator,
-  RefreshControl,
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import {
-  Wallet,
-  QrCode,
-  ScanLine,
-  ArrowDownToLine,
-  ChevronRight,
-  ReceiptText,
-  Banknote,
-  ArrowUpRight,
-  ArrowDownLeft,
+  QrCode, ScanLine, ArrowDownToLine, ChevronRight, ArrowUpRight, ArrowDownLeft,
+  Briefcase, Pencil, Wallet,
 } from 'lucide-react-native';
-import Svg, { Path, Circle } from 'react-native-svg';
+import Svg, { Circle, Path, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { COLORS } from '../../src/theme';
 import { api, DashboardToday, Tx } from '../../src/api';
+import StaticQrisOverlay from '../../src/components/StaticQrisOverlay';
 
-// PAYO custom logo (top-left): coin + check, outline
+// PAYO logo: Tether-style coin with subtle gradient (top-left)
 function PayoLogo({ size = 36 }: { size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 48 48" fill="none">
-      <Circle cx="24" cy="24" r="20" stroke="#FFFFFF" strokeWidth="2.5" />
-      <Path d="M16 24l6 6 12-12" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-      <Path d="M14 16h20M14 32h14" stroke="#FFFFFF" strokeWidth="1.2" strokeOpacity="0.45" strokeLinecap="round" />
+      <Defs>
+        <LinearGradient id="g1" x1="0" y1="0" x2="48" y2="48">
+          <Stop offset="0" stopColor="#FFFFFF" stopOpacity="1" />
+          <Stop offset="1" stopColor="#E8FFF8" stopOpacity="1" />
+        </LinearGradient>
+      </Defs>
+      <Circle cx="24" cy="24" r="20" fill="url(#g1)" stroke={COLORS.primary} strokeWidth="2" />
+      <Path d="M16 18h16M24 18v4" stroke={COLORS.primary} strokeWidth="2.4" strokeLinecap="round" />
+      <Path d="M18 22.5c0 2 2.7 3.4 6 3.4s6-1.4 6-3.4M24 22.5v9" stroke={COLORS.primary} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
     </Svg>
   );
 }
 
-const formatUSDT = (n: number) =>
-  n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const formatIDR = (n: number) =>
-  'Rp' + Math.round(n).toLocaleString('id-ID');
+const formatUSDT = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const formatIDR = (n: number) => 'Rp' + Math.round(n).toLocaleString('id-ID');
 
 const formatTxAmount = (tx: Tx) => {
   if (tx.currency === 'IDR') return formatIDR(tx.amount);
@@ -48,13 +40,8 @@ const formatTxAmount = (tx: Tx) => {
 
 const formatTxDate = (iso: string) => {
   const d = new Date(iso);
-  const day = String(d.getDate()).padStart(2, '0');
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-  const m = months[d.getMonth()];
-  const y = d.getFullYear();
-  const hh = String(d.getHours()).padStart(2, '0');
-  const mm = String(d.getMinutes()).padStart(2, '0');
-  return `${day} ${m} ${y}, ${hh}:${mm} WIB`;
+  return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}, ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')} WIB`;
 };
 
 const formatTodayDate = (iso: string) => {
@@ -63,6 +50,10 @@ const formatTodayDate = (iso: string) => {
   return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 };
 
+function labelType(t: string) {
+  return ({ USDT: 'USDT', USDC: 'USDC', QRIS_STATIS: 'QRIS Statis', QRIS_DINAMIS: 'QRIS Dinamis', TRANSFER: 'Transfer', WITHDRAW: 'Withdraw' } as any)[t] || t;
+}
+
 export default function Dashboard() {
   const router = useRouter();
   const [data, setData] = useState<DashboardToday | null>(null);
@@ -70,6 +61,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [showInIDR, setShowInIDR] = useState(false);
+  const [qrisOverlayOpen, setQrisOverlayOpen] = useState(false);
+  const [qrisData, setQrisData] = useState<any>(null);
 
   const load = useCallback(async () => {
     try {
@@ -84,18 +77,26 @@ export default function Dashboard() {
     }
   }, []);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  useEffect(() => { load(); }, [load]);
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    load();
+  const onRefresh = () => { setRefreshing(true); load(); };
+
+  const openStaticQris = async () => {
+    setQrisOverlayOpen(true);
+    if (!qrisData) {
+      try { setQrisData(await api.staticQris()); } catch {}
+    }
   };
+
+  const ActionTile = ({ Icon, label, onPress, testID }: { Icon: any; label: string; onPress: () => void; testID: string }) => (
+    <TouchableOpacity style={styles.actionTile} onPress={onPress} activeOpacity={0.85} testID={testID}>
+      <Icon color={COLORS.primary} size={22} strokeWidth={2} />
+      <Text style={styles.actionTileText}>{label}</Text>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.root} testID="dashboard-screen">
-      {/* Teal header background */}
       <View style={styles.headerBg} />
 
       <SafeAreaView edges={['top']} style={{ flex: 1, zIndex: 1 }}>
@@ -105,7 +106,7 @@ export default function Dashboard() {
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#fff" />}
           showsVerticalScrollIndicator={false}
         >
-          {/* Top bar with logo */}
+          {/* Top bar with new logo + brand */}
           <View style={styles.topBar}>
             <View style={styles.logoWrap} testID="payo-logo">
               <PayoLogo size={32} />
@@ -135,9 +136,7 @@ export default function Dashboard() {
                 <ActivityIndicator color={COLORS.primary} style={{ marginTop: 8 }} />
               ) : (
                 <Text style={styles.incomeAmount}>
-                  {showInIDR
-                    ? formatIDR(data?.total_idr ?? 0)
-                    : `${formatUSDT(data?.total_usdt ?? 0)} USDT`}
+                  {showInIDR ? formatIDR(data?.total_idr ?? 0) : `${formatUSDT(data?.total_usdt ?? 0)} USDT`}
                 </Text>
               )}
             </TouchableOpacity>
@@ -149,55 +148,32 @@ export default function Dashboard() {
             )}
           </View>
 
-          {/* Receive payment block */}
+          {/* Receive payment block — 2x2 grid */}
           <View style={styles.actionsCard} testID="actions-card">
             <Text style={styles.sectionLabel}>Terima Pembayaran</Text>
-
-            <TouchableOpacity
-              style={styles.actionBtn}
-              onPress={() => router.push('/input-manual')}
-              testID="input-manual-btn"
-              activeOpacity={0.8}
-            >
-              <Banknote color={COLORS.primary} size={22} strokeWidth={2} />
-              <Text style={styles.actionBtnText}>Input Nominal Langsung & QRIS</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.actionBtn}
-              onPress={() => router.push('/static-qris')}
-              testID="open-qris-btn"
-              activeOpacity={0.8}
-            >
-              <QrCode color={COLORS.primary} size={22} strokeWidth={2} />
-              <Text style={styles.actionBtnText}>Tampilkan QRIS</Text>
-            </TouchableOpacity>
+            <View style={styles.gridRow}>
+              <ActionTile Icon={Briefcase} label="Transfer" onPress={() => router.push('/transfer')} testID="transfer-btn" />
+              <ActionTile Icon={ScanLine} label={'Scan\nQRIS'} onPress={() => router.push('/scan-qris')} testID="scan-qris-btn" />
+            </View>
+            <View style={styles.gridRow}>
+              <ActionTile Icon={Pencil} label={'Input Nominal\nQRIS'} onPress={() => router.push('/input-manual')} testID="input-manual-btn" />
+              <ActionTile Icon={QrCode} label={'Open\nQRIS'} onPress={openStaticQris} testID="open-qris-btn" />
+            </View>
 
             <TouchableOpacity
               style={styles.withdrawRow}
-              onPress={() => router.push('/transfer')}
-              testID="transfer-btn"
+              onPress={() => router.push('/withdraw')}
+              testID="withdraw-btn"
               activeOpacity={0.7}
             >
               <Wallet color={COLORS.primary} size={22} strokeWidth={2} />
               <View style={{ flex: 1, marginLeft: 12 }}>
-                <Text style={styles.withdrawTitle}>Tarik Pendapatan Sekarang</Text>
-                <Text style={styles.withdrawSub}>Withdraw kapan saja dan kemana saja</Text>
+                <Text style={styles.withdrawTitle}>Tarik Pendapatan QRIS Sekarang</Text>
+                <Text style={styles.withdrawSub}>Bisa kapan saja, di luar jadwal yang dipilih</Text>
               </View>
               <ChevronRight color={COLORS.primary} size={22} strokeWidth={2} />
             </TouchableOpacity>
           </View>
-
-          {/* Scan QRIS quick action */}
-          <TouchableOpacity
-            style={styles.scanCta}
-            onPress={() => router.push('/scan-qris')}
-            testID="scan-qris-btn"
-            activeOpacity={0.85}
-          >
-            <ScanLine color="#fff" size={20} strokeWidth={2.2} />
-            <Text style={styles.scanCtaText}>Scan QRIS</Text>
-          </TouchableOpacity>
 
           {/* Recent transactions */}
           <View style={styles.recentHeader}>
@@ -217,22 +193,17 @@ export default function Dashboard() {
                 <View key={tx.id} testID={`recent-tx-${idx}`}>
                   <View style={styles.txRow}>
                     <View style={styles.txIconWrap}>
-                      {tx.direction === 'IN' ? (
-                        <ArrowDownLeft color={COLORS.primary} size={20} strokeWidth={2.2} />
-                      ) : (
-                        <ArrowUpRight color={COLORS.primary} size={20} strokeWidth={2.2} />
-                      )}
+                      {tx.direction === 'IN'
+                        ? <ArrowDownLeft color={COLORS.primary} size={20} strokeWidth={2.2} />
+                        : <ArrowUpRight color={COLORS.primary} size={20} strokeWidth={2.2} />}
                     </View>
                     <View style={{ flex: 1 }}>
                       <Text style={styles.txType}>{labelType(tx.type)}</Text>
                       <Text style={styles.txDate}>{formatTxDate(tx.timestamp)}</Text>
                     </View>
-                    <View style={{ alignItems: 'flex-end' }}>
-                      <Text style={[styles.txAmount, tx.direction === 'OUT' && { color: COLORS.danger }]}>
-                        {tx.direction === 'OUT' ? '-' : ''}
-                        {formatTxAmount(tx)}
-                      </Text>
-                    </View>
+                    <Text style={[styles.txAmount, tx.direction === 'OUT' && { color: COLORS.danger }]}>
+                      {tx.direction === 'OUT' ? '-' : ''}{formatTxAmount(tx)}
+                    </Text>
                   </View>
                   {idx < recent.length - 1 && <View style={styles.divider} />}
                 </View>
@@ -241,52 +212,37 @@ export default function Dashboard() {
           </View>
         </ScrollView>
       </SafeAreaView>
+
+      {/* Open QRIS overlay (on same page) */}
+      <StaticQrisOverlay
+        visible={qrisOverlayOpen}
+        onClose={() => setQrisOverlayOpen(false)}
+        data={qrisData}
+      />
     </View>
   );
 }
 
-function labelType(t: string) {
-  switch (t) {
-    case 'USDT': return 'USDT';
-    case 'USDC': return 'USDC';
-    case 'QRIS_STATIS': return 'QRIS Statis';
-    case 'QRIS_DINAMIS': return 'QRIS Dinamis';
-    case 'TRANSFER': return 'Transfer';
-    default: return t;
-  }
-}
-
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: COLORS.bgLight },
-  headerBg: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0,
-    height: 280,
-    backgroundColor: COLORS.primary,
-  },
+  headerBg: { position: 'absolute', top: 0, left: 0, right: 0, height: 320, backgroundColor: COLORS.primary },
   topBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingTop: 4, paddingBottom: 8 },
   logoWrap: {
     width: 40, height: 40, borderRadius: 12,
-    backgroundColor: 'rgba(255,255,255,0.18)',
-    alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.35)',
+    backgroundColor: 'rgba(255,255,255,0.92)', alignItems: 'center', justifyContent: 'center',
+    shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 4,
   },
   brandText: { color: '#fff', fontSize: 18, fontWeight: '800', marginLeft: 12, letterSpacing: 1.5 },
   welcomeCard: {
-    marginTop: 8, marginHorizontal: 20,
-    padding: 20, borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255,0.18)',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)',
+    marginTop: 8, marginHorizontal: 20, padding: 20, borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255,0.18)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)',
   },
   welcomeLabel: { color: '#fff', fontSize: 22, fontWeight: '800' },
   eventName: { color: '#fff', fontSize: 18, fontWeight: '700', marginTop: 16 },
   eventLoc: { color: 'rgba(255,255,255,0.9)', fontSize: 14, marginTop: 4 },
   incomeCard: {
-    marginTop: 16, marginHorizontal: 20,
-    padding: 18, borderRadius: 16,
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 16, shadowOffset: { width: 0, height: 6 },
-    elevation: 4,
+    marginTop: 16, marginHorizontal: 20, padding: 18, borderRadius: 16, backgroundColor: '#FFFFFF',
+    shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 4,
   },
   incomeHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   incomeLabel: { color: COLORS.primaryText, fontSize: 13, fontWeight: '500' },
@@ -295,50 +251,28 @@ const styles = StyleSheet.create({
   incomeAmount: { color: COLORS.primaryText, fontSize: 36, fontWeight: '800', marginTop: 6, letterSpacing: -0.5 },
   rateHint: { color: COLORS.textSecondary, fontSize: 11, marginTop: 6 },
   actionsCard: {
-    marginTop: 16, marginHorizontal: 20,
-    padding: 16, borderRadius: 18,
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 14, shadowOffset: { width: 0, height: 4 },
-    elevation: 3,
+    marginTop: 16, marginHorizontal: 20, padding: 16, borderRadius: 18, backgroundColor: '#FFFFFF',
+    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 14, shadowOffset: { width: 0, height: 4 }, elevation: 3,
   },
   sectionLabel: { color: COLORS.textSecondary, fontSize: 13, marginBottom: 12, fontWeight: '600' },
-  actionBtn: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1.5, borderColor: COLORS.primary,
-    borderRadius: 14, paddingVertical: 16, paddingHorizontal: 12,
-    marginBottom: 12, gap: 12,
+  gridRow: { flexDirection: 'row', gap: 12, marginBottom: 12 },
+  actionTile: {
+    flex: 1, paddingVertical: 18, paddingHorizontal: 12,
+    borderWidth: 1.5, borderColor: COLORS.primary, borderRadius: 14,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, minHeight: 64,
   },
-  actionBtnText: { color: COLORS.primaryText, fontSize: 15, fontWeight: '700' },
-  withdrawRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 8, paddingHorizontal: 4 },
+  actionTileText: { color: COLORS.primaryText, fontSize: 14, fontWeight: '700', textAlign: 'left' },
+  withdrawRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 4, marginTop: 4 },
   withdrawTitle: { color: COLORS.primaryText, fontSize: 15, fontWeight: '700' },
   withdrawSub: { color: COLORS.textSecondary, fontSize: 12, marginTop: 2 },
-  scanCta: {
-    marginTop: 16, marginHorizontal: 20,
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
-    backgroundColor: COLORS.primary,
-    paddingVertical: 14, borderRadius: 14,
-    shadowColor: COLORS.primary, shadowOpacity: 0.35, shadowRadius: 12, shadowOffset: { width: 0, height: 6 },
-    elevation: 4,
-  },
-  scanCtaText: { color: '#fff', fontSize: 15, fontWeight: '700' },
-  recentHeader: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    marginTop: 24, paddingHorizontal: 24,
-  },
+  recentHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 24, paddingHorizontal: 24 },
   recentTitle: { fontSize: 18, fontWeight: '800', color: COLORS.textPrimary },
   recentCard: {
-    marginTop: 12, marginHorizontal: 20,
-    padding: 16, borderRadius: 16,
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 14, shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
+    marginTop: 12, marginHorizontal: 20, padding: 16, borderRadius: 16, backgroundColor: '#FFFFFF',
+    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 14, shadowOffset: { width: 0, height: 4 }, elevation: 2,
   },
   txRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12 },
-  txIconWrap: {
-    width: 36, height: 36, borderRadius: 10,
-    backgroundColor: COLORS.bgLight,
-    alignItems: 'center', justifyContent: 'center', marginRight: 12,
-  },
+  txIconWrap: { width: 36, height: 36, borderRadius: 10, backgroundColor: COLORS.bgLight, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
   txType: { color: COLORS.primaryText, fontSize: 15, fontWeight: '700' },
   txDate: { color: COLORS.textSecondary, fontSize: 11, marginTop: 2 },
   txAmount: { color: COLORS.primaryText, fontSize: 16, fontWeight: '800' },
