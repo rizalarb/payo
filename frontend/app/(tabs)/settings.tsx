@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Bell, Shield, HelpCircle, LogOut, Globe, Wallet, ChevronRight } from 'lucide-react-native';
+import { Bell, Shield, HelpCircle, LogOut, Globe, Wallet, ChevronRight, Cpu } from 'lucide-react-native';
 import { COLORS } from '../../src/theme';
+import { initQvac, getAIStatus, AIStatus } from '../../src/services/qvac';
 
 const ITEMS: { icon: any; label: string; sub?: string }[] = [
   { icon: Wallet, label: 'Dompet & Alamat', sub: 'Kelola wallet USDT (TRC20)' },
@@ -77,4 +78,14 @@ const styles = StyleSheet.create({
     paddingVertical: 14, borderRadius: 14,
   },
   logoutText: { color: COLORS.danger, fontWeight: '700' },
+  aiCard: {
+    flexDirection: 'row', alignItems: 'center', gap: 12, marginHorizontal: 20, marginBottom: 12,
+    padding: 14, backgroundColor: '#fff', borderRadius: 16,
+    shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 2,
+  },
+  aiIcon: { width: 44, height: 44, borderRadius: 12, backgroundColor: COLORS.bgLight, alignItems: 'center', justifyContent: 'center' },
+  aiTitle: { color: COLORS.textPrimary, fontWeight: '800', fontSize: 14 },
+  aiSub: { color: COLORS.textSecondary, fontSize: 11, marginTop: 2 },
+  aiBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999 },
+  aiBadgeText: { color: '#fff', fontWeight: '800', fontSize: 10, letterSpacing: 0.5 },
 });

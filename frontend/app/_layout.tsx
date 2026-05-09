@@ -1,8 +1,14 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useEffect } from 'react';
+import { initQvac } from '../src/services/qvac';
 
 export default function RootLayout() {
+  useEffect(() => {
+    // Kick off QVAC SDK init in the background; safe on all platforms.
+    initQvac().catch(() => {});
+  }, []);
   return (
     <SafeAreaProvider>
       <StatusBar style="light" />

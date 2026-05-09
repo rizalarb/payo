@@ -1,0 +1,52 @@
+{
+  "summary": "Iteration 4 testing. Backend: 30/30 regression PASS + new OCR tests added (2/2 PASS — empty body→400, valid PNG with text→200 returning {text}). Frontend: 3 critical wiring bugs introduced in iter-4 break the review's main flows. (1) /transfer red-screens with 'ReferenceError: params is not defined' because useLocalSearchParams() was never called — every navigation into /transfer (including the new Demo:QR and Demo:OCR Struk demo buttons, and any /transfer?address=... deep-link) crashes the screen. (2) Settings tab does NOT render the AI Engine status card at all (Cpu, initQvac, getAIStatus, AIStatus are imported and aiCard/aiBadge/aiTitle styles exist, but no JSX renders them). (3) Settings 'Keamanan' row never navigates to /setup-pin: useRouter is not imported/called, ITEMS entries don't carry onPressKey:'pin', and the row label is 'Keamanan' (not 'Keamanan PIN'). Dashboard logo, Open-QRIS overlay opening, and Scan-QRIS web demo screen with both demo buttons all render correctly. NOTE: full-opaque QRIS overlay claim is partially incorrect on web preview — the dashboard 'Welcome to PAYO' card remains visible behind the modal during/after slide-in (Modal animationType=slide on web doesn't snap to fullscreen the same way it does on iOS/Android). On native build statusBarTranslucent + slide should fully cover; verify on device.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/ocr/extract", "issue": "Returns 500 (not a 4xx) when caller sends a synthetic 1×1 PNG that OpenAI rejects as 'unsupported image'. Real photos work. Consider catching litellm BadRequestError and mapping to 400 with a friendlier message."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "app/transfer.tsx", "issue": "RED-SCREEN ReferenceError: params is not defined at line 16:27. The useEffect on lines 37-44 reads params.address/.amount/.from but `params` is never declared. Missing `import { useLocalSearchParams } from 'expo-router'` + `const params = useLocalSearchParams();` inside Transfer().", "testID": "transfer-screen", "priority": "CRITICAL"},
+      {"component": "app/(tabs)/settings.tsx", "issue": "AI Engine status card NOT rendered. Imports Cpu/initQvac/getAIStatus/AIStatus and styles aiCard/aiIcon/aiTitle/aiSub/aiBadge/aiBadgeText exist but no JSX block uses them. Need to: useEffect(()=>initQvac().then(setStatus)), then render <View style={aiCard}> at the top of ScrollView with badge text 'OFFLINE' or 'CLOUD' and message=status.message.", "testID": "settings-screen", "priority": "CRITICAL"},
+      {"component": "app/(tabs)/settings.tsx", "issue": "'Keamanan' row does not navigate to /setup-pin. (a) useRouter not imported; `router` is undefined inside onPress (would throw if the condition matched). (b) ITEMS entries have no onPressKey field, so `if (it.onPressKey === 'pin')` is always false. (c) The row label is 'Keamanan', review expects 'Keamanan PIN'. Add `const router = useRouter()`, mark the security item with onPressKey:'pin', and rename label.", "testID": "settings-row-2", "priority": "HIGH"}
+    ],
+    "integration_issues": [
+      {"flow": "Dashboard → Scan QRIS → Demo:QR/OCR → Transfer", "issue": "Both demo buttons navigate correctly with query params, but the destination /transfer screen immediately red-screens (see params bug). End-to-end deep-link prefill cannot be verified until transfer.tsx is fixed.", "affected_testIDs": ["demo-qr-btn", "demo-ocr-btn", "transfer-screen", "address-input", "amount-input"]},
+      {"flow": "Transfer submit → PIN modal → SuccessModal", "issue": "Cannot reach because /transfer crashes on mount.", "affected_testIDs": ["submit-transfer-btn", "transfer-pin-modal", "transfer-success-modal"]}
+    ],
+    "design_issues": [
+      {"screen": "Open QRIS overlay (web)", "issues": ["On web preview, the Modal slide-in does not fully cover the dashboard — Welcome card / income card / actions are still visible behind. statusBarTranslucent + animationType=slide is a no-op on RN-Web. Add a solid backgroundColor + position:absolute fullscreen wrapper, or set Modal transparent={false} explicitly and ensure root View flex:1 fills viewport on web. Native iOS/Android should be fine."]}
+    ],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_payo_api.py",
+    "/app/backend/tests/test_pin_security.py",
+    "/app/backend/tests/test_ocr.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(CRITICAL) Fix /app/frontend/app/transfer.tsx: import { useLocalSearchParams } from 'expo-router' and add `const params = useLocalSearchParams();` inside Transfer() before the useEffect that reads params.address/.amount/.from. Without this, every transfer entry-point red-screens.",
+    "(CRITICAL) Render the AI Engine status card in /app/frontend/app/(tabs)/settings.tsx. Add useState<AIStatus> + useEffect(()=>{ initQvac().then(setStatus) }, []) and render <View style={styles.aiCard}><View style={styles.aiIcon}><Cpu/></View><View><Text style={styles.aiTitle}>AI Engine</Text><Text style={styles.aiSub}>{status?.message}</Text></View><View style={[styles.aiBadge,{backgroundColor: status?.mode==='qvac-offline'?COLORS.primary:'#888'}]}><Text style={styles.aiBadgeText}>{status?.mode==='qvac-offline'?'OFFLINE':'CLOUD'}</Text></View></View>",
+    "(HIGH) Wire Keamanan PIN row in settings.tsx: add `const router = useRouter();`, change Shield item to label:'Keamanan PIN' with onPressKey:'pin', and the existing onPress handler will then navigate to /setup-pin.",
+    "(LOW) Map litellm BadRequestError in /api/ocr/extract → HTTP 400 with 'invalid image' message instead of 500.",
+    "(LOW) Open-QRIS overlay on web: ensure the Modal is opaque fullscreen (currently dashboard text leaks through behind). statusBarTranslucent has no effect on web."
+  ],
+  "critical_code_review_comments": [
+    "transfer.tsx line 38-44 references `params.address`, `params.amount`, `params.from` and depends on [params.address, params.amount] without ever defining `params`. Will ALWAYS crash. This is the #1 blocker.",
+    "settings.tsx has dead imports (Cpu, initQvac, getAIStatus, AIStatus) and dead styles (aiCard/aiIcon/aiTitle/aiSub/aiBadge/aiBadgeText) — code is half-written. Also references `router.push` and `it.onPressKey` neither of which exist.",
+    "StaticQrisOverlay uses Modal w/ statusBarTranslucent — works native, but on RN-Web it does not fullscreen-cover. Verified visually in /tmp/qris.png screenshot.",
+    "Backend ocr/extract endpoint correctly excludes _id, validates input, falls back gracefully — only flaw is 500-vs-400 mapping for litellm BadRequestError on degenerate images."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_ocr.py (new — 2 tests for /api/ocr/extract empty→400 and valid-image→200)"
+  ],
+  "success_rate": {"backend": "100% (32/32 — 30 regression + 2 new OCR)", "frontend": "~40% — Dashboard render, logo, Open-QRIS open, Scan-QRIS web demo screen with both buttons all PASS. Transfer red-screens (blocking). Settings missing AI card + PIN nav not wired. End-to-end demo→transfer→PIN→success cannot be exercised."},
+  "seed_data_creation": "No new seed data. Existing PIN doc (device_id='default-device', pin=123456) from iteration 3 still present.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Public URL https://qvac-payment-suite.preview.emergentagent.com. Run `pytest /app/backend/tests/ -v` for the full 32-test suite. To reproduce the transfer red-screen: navigate to /transfer (or tap Scan QRIS → 'Demo: QR → Transfer 50 USDT') — DevTools shows 'ReferenceError: params is not defined at Transfer (app/transfer.tsx:16:27)'. To reproduce settings issues: open Settings tab — observe no AI/CLOUD/QVAC card, observe tapping 'Keamanan' does nothing. After main agent fixes, re-run the playwright flow: dashboard → scan-qris-btn → demo-qr-btn → expect transfer-screen with address-input='TXYZ1aBcDeFg2hIjKlMnOpQ3rStUvWxY' + amount-input='50' + note-input='Dari Scan QR / OCR' prefilled, then submit-transfer-btn → transfer-pin-modal → enter 123456 via pin-key-{1,2,3,4,5,6} → transfer-success-modal. Default PIN 123456.",
+  "rca_of_issue": "Iteration 4 bundled 7 changes (logo swap, QVAC SDK wiring, Settings AI card, scan-qris redesign with mode toggle + URL params, /transfer reading URL params, StaticQrisOverlay Modal rewrite, /api/ocr/extract). Three frontend wiring steps were left half-finished: (1) transfer.tsx — author added the useEffect that reads params.* and added params.* to the dep array, but FORGOT to add the `useLocalSearchParams()` hook call (and forgot to import it). Reproduction: any visit to /transfer red-screens. Fix: 2-line patch — `import { useLocalSearchParams } from 'expo-router'` + `const params = useLocalSearchParams();` inside the component. (2) settings.tsx — author added all the imports and styles for the AI Engine card but never wrote the JSX block that renders it. Reproduction: Settings tab shows just the 5 default rows + Keluar, no card. Fix: render the card at the top of ScrollView using getAIStatus()/initQvac(). (3) settings.tsx — author tried to wire the Keamanan row to /setup-pin via `if (it.onPressKey === 'pin') router.push(...)` but neither imported useRouter nor added onPressKey:'pin' to the ITEMS row. Fix: add useRouter, add onPressKey to the Shield item, rename label to 'Keamanan PIN'. All three are mechanical 1-5 line patches; no business logic dispute. The testing agent intentionally did NOT apply them because they need design intent (badge text wording, exact AI card layout, label rename) that should come from the main agent."
+}

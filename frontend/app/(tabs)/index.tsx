@@ -1,34 +1,19 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl,
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl, Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import {
-  QrCode, ScanLine, ArrowDownToLine, ChevronRight, ArrowUpRight, ArrowDownLeft,
+  QrCode, ScanLine, ChevronRight, ArrowUpRight, ArrowDownLeft,
   Briefcase, Pencil, Wallet,
 } from 'lucide-react-native';
-import Svg, { Circle, Path, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { COLORS } from '../../src/theme';
 import { api, DashboardToday, Tx } from '../../src/api';
 import StaticQrisOverlay from '../../src/components/StaticQrisOverlay';
 
-// PAYO logo: Tether-style coin with subtle gradient (top-left)
-function PayoLogo({ size = 36 }: { size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 48 48" fill="none">
-      <Defs>
-        <LinearGradient id="g1" x1="0" y1="0" x2="48" y2="48">
-          <Stop offset="0" stopColor="#FFFFFF" stopOpacity="1" />
-          <Stop offset="1" stopColor="#E8FFF8" stopOpacity="1" />
-        </LinearGradient>
-      </Defs>
-      <Circle cx="24" cy="24" r="20" fill="url(#g1)" stroke={COLORS.primary} strokeWidth="2" />
-      <Path d="M16 18h16M24 18v4" stroke={COLORS.primary} strokeWidth="2.4" strokeLinecap="round" />
-      <Path d="M18 22.5c0 2 2.7 3.4 6 3.4s6-1.4 6-3.4M24 22.5v9" stroke={COLORS.primary} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-    </Svg>
-  );
-}
+// Logo bundled as static asset (new logo provided by user)
+const LOGO = require('../../assets/images/payo-logo.jpg');
 
 const formatUSDT = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const formatIDR = (n: number) => 'Rp' + Math.round(n).toLocaleString('id-ID');
@@ -109,7 +94,7 @@ export default function Dashboard() {
           {/* Top bar with new logo + brand */}
           <View style={styles.topBar}>
             <View style={styles.logoWrap} testID="payo-logo">
-              <PayoLogo size={32} />
+              <Image source={LOGO} style={styles.logoImg} resizeMode="contain" />
             </View>
             <Text style={styles.brandText}>PAYO</Text>
           </View>
@@ -228,10 +213,11 @@ const styles = StyleSheet.create({
   headerBg: { position: 'absolute', top: 0, left: 0, right: 0, height: 320, backgroundColor: COLORS.primary },
   topBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingTop: 4, paddingBottom: 8 },
   logoWrap: {
-    width: 40, height: 40, borderRadius: 12,
-    backgroundColor: 'rgba(255,255,255,0.92)', alignItems: 'center', justifyContent: 'center',
+    width: 44, height: 44, borderRadius: 12,
+    backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
     shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 4,
   },
+  logoImg: { width: 40, height: 40, borderRadius: 10 },
   brandText: { color: '#fff', fontSize: 18, fontWeight: '800', marginLeft: 12, letterSpacing: 1.5 },
   welcomeCard: {
     marginTop: 8, marginHorizontal: 20, padding: 20, borderRadius: 18,

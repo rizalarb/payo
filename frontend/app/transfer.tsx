@@ -33,6 +33,16 @@ export default function Transfer() {
     api.pinStatus().then((s) => setHasPin(s.is_set)).catch(() => {});
   }, []);
 
+  // Handle URL params (from /scan-qris): prefill address & amount
+  useEffect(() => {
+    if (params.address && typeof params.address === 'string') {
+      setAddress(params.address);
+      if (params.amount && typeof params.amount === 'string') setAmount(params.amount);
+      if (params.from === 'scan') setNote('Dari Scan QR / OCR');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.address, params.amount]);
+
   const onIntent = (intent: VoiceIntent, transcript: string) => {
     setVoiceTranscript(transcript);
     if (intent.action === 'withdraw') {

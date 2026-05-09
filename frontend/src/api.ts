@@ -80,6 +80,15 @@ export const api = {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();
   },
+  ocrExtract: async (base64: string): Promise<{ text: string }> => {
+    const res = await fetch(`${API}/ocr/extract`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image_base64: base64 }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+    return res.json();
+  },
   voiceParseAudio: async (uri: string, mimeType: string): Promise<{ transcript: string; intent: VoiceIntent }> => {
     const fd = new FormData();
     const filename = uri.split('/').pop() || 'voice.m4a';

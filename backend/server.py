@@ -466,6 +466,41 @@ async def voice_parse_text(text: str = Form(...)):
     return {"transcript": text, "intent": intent}
 
 
+# ============= OCR (cloud fallback when QVAC offline not available) =============
+class OcrRequest(BaseModel):
+    image_base64: str
+
+
+@api_router.post("/ocr/extract")
+async def ocr_extract(payload: OcrRequest):
+    """Accept base64 image and run GPT-4o vision OCR. Used as fallback for web preview only."""
+    api_key = os.environ.get("EMERGENT_LLM_KEY")
+    if not api_key:
+        raise HTTPException(500, "EMERGENT_LLM_KEY not configured")
+    if not payload.image_base64:
+        raise HTTPException(400, "image_base64 required")
+    try:
+        from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+        b64 = payload.image_base64
+        if b64.startswith("data:"):
+            b64 = b64.split(",", 1)[-1]
+        img = ImageContent(image_base64=b64)
+        prompt = (
+            "Read ALL visible text in this image (receipt, ticket, QR, address). "
+            "Return the raw text only, preserving line breaks. No commentary."
+        )
+        chat = (LlmChat(api_key=api_key, session_id=str(uuid.uuid4()), system_message="You are an OCR engine. Output raw text only.")
+                .with_model("openai", "gpt-4o"))
+        resp = await chat.send_message(UserMessage(text=prompt, file_contents=[img]))
+        text = str(resp).strip()
+        return {"text": text}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.exception("OCR failed")
+        raise HTTPException(500, f"OCR failed: {e}")
+
+
 # ============= PIN (transaction security) =============
 DEFAULT_DEVICE_ID = "default-device"
 PIN_MAX_ATTEMPTS = 5
