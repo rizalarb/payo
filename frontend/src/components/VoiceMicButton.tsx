@@ -107,8 +107,10 @@ export default function VoiceMicButton({ onIntent, testID }: Props) {
       setRecording(null);
       if (!uri) throw new Error('No recording uri');
       const mime = uri.endsWith('.m4a') ? 'audio/m4a' : uri.endsWith('.wav') ? 'audio/wav' : 'audio/mp4';
-      const res = await api.voiceParseAudio(uri, mime);
-      onIntent(res.intent, res.transcript);
+      // QVAC offline first; falls back to cloud if SDK unavailable
+      const stt = await qvacAI.transcribe(uri, mime);
+      const intent = await qvacAI.parseIntent(stt.text);
+      onIntent(intent, stt.text);
     } catch (e: any) {
       Alert.alert('Voice error', e?.message ?? 'Gagal proses suara');
     } finally {
@@ -124,8 +126,8 @@ export default function VoiceMicButton({ onIntent, testID }: Props) {
     setTyped('');
     try {
       setIsProcessing(true);
-      const res = await api.voiceParseText(t);
-      onIntent(res.intent, res.transcript);
+      const intent = await qvacAI.parseIntent(t);
+      onIntent(intent, t);
     } catch (e: any) {
       Alert.alert('Voice error', e?.message ?? 'Gagal');
     } finally {

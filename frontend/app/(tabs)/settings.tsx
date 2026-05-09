@@ -29,7 +29,7 @@ export default function Settings() {
                 key={i}
                 style={styles.row}
                 activeOpacity={0.7}
-                onPress={() => { if (it.onPressKey === 'pin') router.push('/setup-pin'); }}
+                onPress={() => onItemPress(it.onPressKey)}
                 testID={`settings-row-${i}`}
               >
                 <View style={styles.iconWrap}>

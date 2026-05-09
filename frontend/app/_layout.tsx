@@ -14,6 +14,7 @@ export default function RootLayout() {
         <Stack.Screen name="withdraw" options={{ presentation: 'card' }} />
         <Stack.Screen name="input-manual" options={{ presentation: 'card' }} />
         <Stack.Screen name="scan-qris" options={{ presentation: 'card' }} />
+        <Stack.Screen name="scan-receipt" options={{ presentation: 'card' }} />
         <Stack.Screen name="setup-pin" options={{ presentation: 'card' }} />
       </Stack>
     </SafeAreaProvider>
