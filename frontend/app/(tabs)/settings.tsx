@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { Bell, Shield, HelpCircle, LogOut, Globe, Wallet, ChevronRight } from 'lucide-react-native';
 import { COLORS } from '../../src/theme';
 
@@ -24,7 +25,13 @@ export default function Settings() {
           {ITEMS.map((it, i) => {
             const Icon = it.icon;
             return (
-              <TouchableOpacity key={i} style={styles.row} activeOpacity={0.7} testID={`settings-row-${i}`}>
+              <TouchableOpacity
+                key={i}
+                style={styles.row}
+                activeOpacity={0.7}
+                onPress={() => { if (it.onPressKey === 'pin') router.push('/setup-pin'); }}
+                testID={`settings-row-${i}`}
+              >
                 <View style={styles.iconWrap}>
                   <Icon color={COLORS.primary} size={20} strokeWidth={2} />
                 </View>

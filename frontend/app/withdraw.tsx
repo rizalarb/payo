@@ -10,6 +10,7 @@ import { COLORS } from '../src/theme';
 import { api, Bank, VoiceIntent, WithdrawResult } from '../src/api';
 import VoiceMicButton from '../src/components/VoiceMicButton';
 import SuccessModal from '../src/components/SuccessModal';
+import PinInputModal from '../src/components/PinInputModal';
 
 const QUICK = [100000, 250000, 500000, 1000000];
 
@@ -24,9 +25,12 @@ export default function Withdraw() {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<WithdrawResult | null>(null);
   const [voiceTranscript, setVoiceTranscript] = useState<string | null>(null);
+  const [pinPromptOpen, setPinPromptOpen] = useState(false);
+  const [hasPin, setHasPin] = useState(false);
 
   useEffect(() => {
     api.banks().then((r) => setBanks(r.items)).catch(() => {});
+    api.pinStatus().then((s) => setHasPin(s.is_set)).catch(() => {});
   }, []);
 
   const onIntent = (intent: VoiceIntent, transcript: string) => {
@@ -49,6 +53,18 @@ export default function Withdraw() {
     if (!accountNumber.trim()) return Alert.alert('Validasi', 'Masukkan nomor rekening');
     if (!accountHolder.trim()) return Alert.alert('Validasi', 'Masukkan nama pemilik rekening');
     if (!amt || amt < 50000) return Alert.alert('Validasi', 'Minimum withdraw Rp50.000');
+    if (hasPin) { setPinPromptOpen(true); return; }
+    Alert.alert(
+      'PIN Belum Diatur',
+      'Untuk keamanan, silakan buat PIN transaksi terlebih dahulu di Settings.',
+      [
+        { text: 'Lewati Sementara', onPress: () => doWithdraw(amt) },
+        { text: 'Buat PIN', onPress: () => router.push('/setup-pin') },
+      ],
+    );
+  };
+
+  const doWithdraw = async (amt: number) => {
     setSubmitting(true);
     try {
       const res = await api.withdraw(bankCode, accountNumber.trim(), accountHolder.trim(), amt, note.trim() || undefined);
@@ -181,9 +197,19 @@ export default function Withdraw() {
       <SuccessModal
         visible={!!result}
         title="Pencairan Berhasil"
-        message={result ? `${fmtIDR(result.net_idr)} akan masuk ke rekening ${result.transaction.counterparty}.\nEstimasi: ${result.estimated_arrival}` : ''}
+        amount={result ? fmtIDR(result.net_idr) : ''}
+        message={result ? `Akan masuk ke rekening ${result.transaction.counterparty}.\nEstimasi: ${result.estimated_arrival}` : ''}
         onClose={() => { setResult(null); router.back(); }}
         testID="withdraw-success-modal"
+      />
+
+      <PinInputModal
+        visible={pinPromptOpen}
+        title="PIN Transaksi"
+        subtitle={`Konfirmasi pencairan ${amount ? fmtIDR(parseFloat(amount)) : ''} ke ${bankCode}`}
+        onClose={() => setPinPromptOpen(false)}
+        onSuccess={() => { setPinPromptOpen(false); doWithdraw(parseFloat(amount)); }}
+        testID="withdraw-pin-modal"
       />
     </SafeAreaView>
   );

@@ -10,6 +10,7 @@ import { COLORS } from '../src/theme';
 import { api, Recipient, VoiceIntent } from '../src/api';
 import VoiceMicButton from '../src/components/VoiceMicButton';
 import SuccessModal from '../src/components/SuccessModal';
+import PinInputModal from '../src/components/PinInputModal';
 
 export default function Transfer() {
   const router = useRouter();
@@ -21,12 +22,15 @@ export default function Transfer() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState<{ amount: number; address: string } | null>(null);
   const [voiceTranscript, setVoiceTranscript] = useState<string | null>(null);
+  const [pinPromptOpen, setPinPromptOpen] = useState(false);
+  const [hasPin, setHasPin] = useState(false);
 
   useEffect(() => {
     api.recentRecipients()
       .then((r) => setRecipients(r.items))
       .catch(() => {})
       .finally(() => setLoading(false));
+    api.pinStatus().then((s) => setHasPin(s.is_set)).catch(() => {});
   }, []);
 
   const onIntent = (intent: VoiceIntent, transcript: string) => {
@@ -57,6 +61,20 @@ export default function Transfer() {
     const amt = parseFloat(amount);
     if (!address.trim()) return Alert.alert('Validasi', 'Alamat wallet wajib diisi');
     if (!amt || amt <= 0) return Alert.alert('Validasi', 'Nominal harus lebih dari 0');
+    if (hasPin) { setPinPromptOpen(true); return; }
+    if (!hasPin) {
+      Alert.alert(
+        'PIN Belum Diatur',
+        'Untuk keamanan, silakan buat PIN transaksi terlebih dahulu di Settings.',
+        [
+          { text: 'Lewati Sementara', onPress: () => doTransfer(amt) },
+          { text: 'Buat PIN', onPress: () => router.push('/setup-pin') },
+        ],
+      );
+    }
+  };
+
+  const doTransfer = async (amt: number) => {
     setSubmitting(true);
     try {
       await api.transfer(address.trim(), amt, note.trim() || undefined);
@@ -173,9 +191,19 @@ export default function Transfer() {
       <SuccessModal
         visible={!!success}
         title="Transfer Berhasil"
-        message={success ? `${success.amount} USDT terkirim ke\n${success.address.slice(0, 12)}…${success.address.slice(-4)}` : ''}
+        amount={success ? `${success.amount} USDT` : ''}
+        message={success ? `Terkirim ke\n${success.address.slice(0, 12)}…${success.address.slice(-4)}` : ''}
         onClose={() => { setSuccess(null); router.back(); }}
         testID="transfer-success-modal"
+      />
+
+      <PinInputModal
+        visible={pinPromptOpen}
+        title="PIN Transaksi"
+        subtitle={`Konfirmasi transfer ${parseFloat(amount) || 0} USDT`}
+        onClose={() => setPinPromptOpen(false)}
+        onSuccess={() => { setPinPromptOpen(false); doTransfer(parseFloat(amount)); }}
+        testID="transfer-pin-modal"
       />
     </SafeAreaView>
   );

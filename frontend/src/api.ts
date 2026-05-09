@@ -70,6 +70,9 @@ export const api = {
   generateQris: (amount: number, currency = 'IDR', note?: string) =>
     request<{ qris_payload: string; amount: number; currency: string; expires_at: string }>('/qris/generate', { method: 'POST', body: JSON.stringify({ amount, currency, note }) }),
   staticQris: () => request<{ qris_payload: string; merchant_name: string; merchant_id: string; location: string }>('/qris/static'),
+  pinStatus: () => request<{ is_set: boolean; is_locked: boolean; failed_attempts: number; time_until_unlock: number | null }>('/pin/status'),
+  pinCreate: (pin: string, confirm_pin: string) => request<{ status: string; message: string }>('/pin/create', { method: 'POST', body: JSON.stringify({ pin, confirm_pin }) }),
+  pinVerify: (pin: string) => request<{ status: string; message: string }>('/pin/verify', { method: 'POST', body: JSON.stringify({ pin }) }),
   voiceParseText: async (text: string): Promise<{ transcript: string; intent: VoiceIntent }> => {
     const fd = new FormData();
     fd.append('text', text);

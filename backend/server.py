@@ -1,3 +1,4 @@
+import bcrypt
 from fastapi import FastAPI, APIRouter, HTTPException, Query, UploadFile, File, Form
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -463,6 +464,116 @@ async def voice_parse_text(text: str = Form(...)):
     """Fallback for web (no mic) — accept typed text and parse intent."""
     intent = await _parse_intent_llm(text)
     return {"transcript": text, "intent": intent}
+
+
+# ============= PIN (transaction security) =============
+DEFAULT_DEVICE_ID = "default-device"
+PIN_MAX_ATTEMPTS = 5
+PIN_LOCKOUT_SECONDS = 900  # 15 minutes
+
+
+class PinCreateRequest(BaseModel):
+    pin: str = Field(..., pattern=r"^\d{6}$")
+    confirm_pin: str = Field(..., pattern=r"^\d{6}$")
+    device_id: Optional[str] = None
+
+
+class PinVerifyRequest(BaseModel):
+    pin: str = Field(..., pattern=r"^\d{6}$")
+    device_id: Optional[str] = None
+
+
+def _hash_pin(pin: str) -> str:
+    return bcrypt.hashpw(pin.encode("utf-8"), bcrypt.gensalt(rounds=12)).decode("utf-8")
+
+
+def _verify_pin_hash(pin: str, hashed: str) -> bool:
+    try:
+        return bcrypt.checkpw(pin.encode("utf-8"), hashed.encode("utf-8"))
+    except Exception:
+        return False
+
+
+@api_router.get("/pin/status")
+async def pin_status(device_id: str = Query(DEFAULT_DEVICE_ID)):
+    doc = await db.pins.find_one({"device_id": device_id}, {"_id": 0, "hashed_pin": 0})
+    now = datetime.now(timezone.utc)
+    if not doc:
+        return {"is_set": False, "is_locked": False, "failed_attempts": 0, "time_until_unlock": None}
+    locked_until = doc.get("locked_until")
+    is_locked = False
+    time_until_unlock = None
+    if locked_until:
+        if isinstance(locked_until, str):
+            locked_until = datetime.fromisoformat(locked_until)
+        if locked_until.tzinfo is None:
+            locked_until = locked_until.replace(tzinfo=timezone.utc)
+        if now < locked_until:
+            is_locked = True
+            time_until_unlock = int((locked_until - now).total_seconds())
+    return {
+        "is_set": True,
+        "is_locked": is_locked,
+        "failed_attempts": doc.get("failed_attempts", 0),
+        "time_until_unlock": time_until_unlock,
+    }
+
+
+@api_router.post("/pin/create")
+async def pin_create(payload: PinCreateRequest):
+    if payload.pin != payload.confirm_pin:
+        raise HTTPException(400, "PIN dan konfirmasi tidak cocok")
+    device_id = payload.device_id or DEFAULT_DEVICE_ID
+    now = datetime.now(timezone.utc)
+    await db.pins.update_one(
+        {"device_id": device_id},
+        {"$set": {
+            "device_id": device_id,
+            "hashed_pin": _hash_pin(payload.pin),
+            "failed_attempts": 0,
+            "locked_until": None,
+            "updated_at": now,
+        }, "$setOnInsert": {"created_at": now}},
+        upsert=True,
+    )
+    return {"status": "success", "message": "PIN berhasil dibuat", "device_id": device_id}
+
+
+@api_router.post("/pin/verify")
+async def pin_verify(payload: PinVerifyRequest):
+    device_id = payload.device_id or DEFAULT_DEVICE_ID
+    now = datetime.now(timezone.utc)
+    doc = await db.pins.find_one({"device_id": device_id})
+    if not doc:
+        raise HTTPException(404, "PIN belum diatur")
+
+    locked_until = doc.get("locked_until")
+    if locked_until:
+        if isinstance(locked_until, str):
+            locked_until = datetime.fromisoformat(locked_until)
+        if locked_until.tzinfo is None:
+            locked_until = locked_until.replace(tzinfo=timezone.utc)
+        if now < locked_until:
+            wait = int((locked_until - now).total_seconds())
+            raise HTTPException(429, f"Akun terkunci. Coba lagi dalam {wait} detik.")
+
+    ok = _verify_pin_hash(payload.pin, doc["hashed_pin"])
+    if ok:
+        await db.pins.update_one({"device_id": device_id}, {"$set": {"failed_attempts": 0, "locked_until": None}})
+        return {"status": "success", "message": "PIN benar"}
+
+    new_attempts = int(doc.get("failed_attempts", 0)) + 1
+    update: dict = {"failed_attempts": new_attempts}
+    locked_now = False
+    if new_attempts >= PIN_MAX_ATTEMPTS:
+        update["locked_until"] = now + timedelta(seconds=PIN_LOCKOUT_SECONDS)
+        locked_now = True
+    await db.pins.update_one({"device_id": device_id}, {"$set": update})
+
+    if locked_now:
+        raise HTTPException(429, f"Terlalu banyak percobaan. Akun terkunci {PIN_LOCKOUT_SECONDS // 60} menit.")
+    remaining = PIN_MAX_ATTEMPTS - new_attempts
+    raise HTTPException(401, f"PIN salah. Sisa percobaan: {remaining}")
 
 
 app.include_router(api_router)
