@@ -1,0 +1,53 @@
+{
+  "stt": {
+    "default": "whisper-tiny",
+    "language": "id",
+    "available": [
+      {
+        "name": "whisper-tiny",
+        "huggingface": "Xenova/whisper-tiny",
+        "size": "75MB",
+        "languages": ["id", "en", "multi"],
+        "recommended": true,
+        "description": "Model tercepat, cocok untuk perangkat low-end"
+      },
+      {
+        "name": "whisper-base",
+        "huggingface": "Xenova/whisper-base",
+        "size": "142MB",
+        "languages": ["id", "en", "multi"],
+        "recommended": false,
+        "description": "Balance antara kecepatan dan akurasi"
+      },
+      {
+        "name": "whisper-small",
+        "huggingface": "Xenova/whisper-small",
+        "size": "244MB",
+        "languages": ["id", "en", "multi"],
+        "recommended": false,
+        "description": "Akurasi tinggi, butuh RAM lebih"
+      }
+    ]
+  },
+  "qr": {
+    "format": "qris",
+    "errorCorrection": "M",
+    "version": "auto",
+    "margin": 4,
+    "scale": 4,
+    "color": {
+      "dark": "#000000",
+      "light": "#FFFFFF"
+    }
+  },
+  "paths": {
+    "sttModels": "./models/stt",
+    "qrAssets": "./models/qr",
+    "cache": "./.cache"
+  },
+  "runtime": {
+    "maxConcurrency": 2,
+    "timeout": 30000,
+    "chunkLengthS": 30
+  }
+}
