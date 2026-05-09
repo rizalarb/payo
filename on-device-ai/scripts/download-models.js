@@ -1,12 +1,15 @@
 /**
  * PAYO On-Device AI - Model Downloader
- * Downloads STT (Whisper) and QR models for offline use
+ * Downloads STT (Whisper via QVAC) and QR models for offline use
+ * 
+ * Supports two engines:
+ * 1. @qvac/sdk (Tether) - Primary, recommended
+ * 2. @xenova/transformers - Fallback
  */
 
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { pipeline } from '@xenova/transformers';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,33 +40,64 @@ function log(type, message) {
   console.log(`${prefix[type] || '[LOG]'} ${message}`);
 }
 
-async function downloadSTTModel() {
-  const defaultModel = config.stt.default;
-  const modelInfo = config.stt.available.find(m => m.name === defaultModel);
+/**
+ * Try to download using @qvac/sdk first
+ */
+async function downloadWithQVAC() {
+  log('info', 'Attempting to load model via @qvac/sdk (Tether)...');
   
-  if (!modelInfo) {
-    log('error', `Model ${defaultModel} not found in config`);
-    return false;
-  }
-
-  log('info', `Downloading STT model: ${modelInfo.name}`);
-  log('info', `Size: ~${modelInfo.size}`);
-  log('info', `From: ${modelInfo.huggingface}`);
-  console.log('');
-
   try {
-    // Create models directory if not exists
-    const modelDir = path.join(ROOT_DIR, config.paths.sttModels);
-    if (!fs.existsSync(modelDir)) {
-      fs.mkdirSync(modelDir, { recursive: true });
+    const { loadModel, unloadModel } = await import('@qvac/sdk');
+    
+    log('download', 'Loading QVAC Whisper model...');
+    log('info', 'Model will be cached locally after first download.');
+    
+    const modelId = await loadModel({
+      modelSrc: 'WHISPER_TINY',  // Multilingual, supports Indonesian
+      modelType: 'stt',
+    });
+    
+    log('ok', 'QVAC STT model loaded successfully!');
+    log('info', `Model ID: ${modelId}`);
+    
+    // Unload to free memory (model stays cached)
+    await unloadModel({ modelId });
+    log('ok', 'Model cached for offline use.');
+    
+    return {
+      success: true,
+      engine: 'qvac',
+      model: 'WHISPER_TINY'
+    };
+  } catch (error) {
+    log('warn', `QVAC failed: ${error.message}`);
+    log('info', 'Falling back to @xenova/transformers...');
+    return { success: false };
+  }
+}
+
+/**
+ * Fallback to @xenova/transformers
+ */
+async function downloadWithTransformers() {
+  log('info', 'Loading model via @xenova/transformers...');
+  
+  try {
+    const { pipeline } = await import('@xenova/transformers');
+    
+    const defaultModel = config.stt.default;
+    const modelInfo = config.stt.available.find(m => m.name === defaultModel);
+    
+    if (!modelInfo) {
+      throw new Error(`Model ${defaultModel} not found in config`);
     }
 
-    // Download using transformers.js pipeline
-    // This will cache the model locally
-    log('download', 'Starting download... (this may take a few minutes)');
+    log('info', `Downloading STT model: ${modelInfo.name}`);
+    log('info', `Size: ~${modelInfo.size}`);
+    log('download', 'Starting download...');
     
     let lastProgress = 0;
-    const transcriber = await pipeline(
+    await pipeline(
       'automatic-speech-recognition',
       modelInfo.huggingface,
       {
@@ -78,25 +112,48 @@ async function downloadSTTModel() {
         }
       }
     );
-
-    console.log('');
-    log('ok', `STT model downloaded: ${modelInfo.name}`);
     
+    console.log('');
+    log('ok', `Transformers model downloaded: ${modelInfo.name}`);
+    
+    return {
+      success: true,
+      engine: 'transformers',
+      model: modelInfo.name
+    };
+  } catch (error) {
+    log('error', `Transformers failed: ${error.message}`);
+    return { success: false };
+  }
+}
+
+async function downloadSTTModel() {
+  // Try QVAC first, then fallback to Transformers
+  let result = await downloadWithQVAC();
+  
+  if (!result.success) {
+    result = await downloadWithTransformers();
+  }
+  
+  if (result.success) {
     // Save model info
+    const modelDir = path.join(ROOT_DIR, config.paths.sttModels);
+    if (!fs.existsSync(modelDir)) {
+      fs.mkdirSync(modelDir, { recursive: true });
+    }
+    
     const modelInfoPath = path.join(modelDir, 'model-info.json');
     fs.writeFileSync(modelInfoPath, JSON.stringify({
-      name: modelInfo.name,
-      huggingface: modelInfo.huggingface,
+      name: result.model,
+      engine: result.engine,
       downloadedAt: new Date().toISOString(),
-      size: modelInfo.size
+      offline: true
     }, null, 2));
-
+    
     return true;
-  } catch (error) {
-    console.log('');
-    log('error', `Failed to download STT model: ${error.message}`);
-    return false;
   }
+  
+  return false;
 }
 
 async function setupQRAssets() {
@@ -112,9 +169,9 @@ async function setupQRAssets() {
     const qrisConfig = {
       version: '01',
       format: 'EMV-QRIS',
-      pointOfInitiation: '12', // Dynamic QR
-      merchantCategoryCode: '5411', // Grocery stores
-      transactionCurrency: '360', // IDR
+      pointOfInitiation: '12',
+      merchantCategoryCode: '5411',
+      transactionCurrency: '360',
       countryCode: 'ID',
       crc: 'CRC16-CCITT-FALSE',
       createdAt: new Date().toISOString()
@@ -146,6 +203,7 @@ async function main() {
   console.log('');
   console.log(`${colors.bold}${colors.blue}═════════════════════════════════════════════════${colors.reset}`);
   console.log(`${colors.bold}${colors.blue}  PAYO - Downloading AI Models${colors.reset}`);
+  console.log(`${colors.bold}${colors.blue}  Engines: @qvac/sdk (primary) + @xenova/transformers (fallback)${colors.reset}`);
   console.log(`${colors.bold}${colors.blue}═════════════════════════════════════════════════${colors.reset}`);
   console.log('');
 
@@ -172,6 +230,7 @@ async function main() {
   console.log(`${colors.bold}═════════════════════════════════════════════════${colors.reset}`);
   if (success) {
     log('ok', 'All models downloaded successfully!');
+    log('info', 'Models are now cached for 100% OFFLINE use.');
     log('info', 'You can now run: npm start');
   } else {
     log('warn', 'Some downloads failed. You can retry with:');

@@ -1,33 +1,66 @@
 {
   "stt": {
+    "engine": "qvac",
+    "fallbackEngine": "transformers",
     "default": "whisper-tiny",
     "language": "id",
-    "available": [
-      {
-        "name": "whisper-tiny",
-        "huggingface": "Xenova/whisper-tiny",
-        "size": "75MB",
-        "languages": ["id", "en", "multi"],
-        "recommended": true,
-        "description": "Model tercepat, cocok untuk perangkat low-end"
+    "qvac": {
+      "models": {
+        "WHISPER_TINY": {
+          "size": "39MB",
+          "languages": ["id", "en", "multi"],
+          "recommended": true,
+          "description": "Fastest, multilingual, best for low-end devices"
+        },
+        "WHISPER_TINY_EN": {
+          "size": "39MB",
+          "languages": ["en"],
+          "recommended": false,
+          "description": "English only, slightly better for English"
+        },
+        "WHISPER_BASE": {
+          "size": "74MB",
+          "languages": ["id", "en", "multi"],
+          "recommended": false,
+          "description": "Better accuracy, multilingual"
+        },
+        "WHISPER_SMALL": {
+          "size": "244MB",
+          "languages": ["id", "en", "multi"],
+          "recommended": false,
+          "description": "High accuracy, needs more RAM"
+        }
       },
-      {
-        "name": "whisper-base",
-        "huggingface": "Xenova/whisper-base",
-        "size": "142MB",
-        "languages": ["id", "en", "multi"],
-        "recommended": false,
-        "description": "Balance antara kecepatan dan akurasi"
-      },
-      {
-        "name": "whisper-small",
-        "huggingface": "Xenova/whisper-small",
-        "size": "244MB",
-        "languages": ["id", "en", "multi"],
-        "recommended": false,
-        "description": "Akurasi tinggi, butuh RAM lebih"
-      }
-    ]
+      "default": "WHISPER_TINY"
+    },
+    "transformers": {
+      "available": [
+        {
+          "name": "whisper-tiny",
+          "huggingface": "Xenova/whisper-tiny",
+          "size": "75MB",
+          "languages": ["id", "en", "multi"],
+          "recommended": true,
+          "description": "Model tercepat, cocok untuk perangkat low-end"
+        },
+        {
+          "name": "whisper-base",
+          "huggingface": "Xenova/whisper-base",
+          "size": "142MB",
+          "languages": ["id", "en", "multi"],
+          "recommended": false,
+          "description": "Balance antara kecepatan dan akurasi"
+        },
+        {
+          "name": "whisper-small",
+          "huggingface": "Xenova/whisper-small",
+          "size": "244MB",
+          "languages": ["id", "en", "multi"],
+          "recommended": false,
+          "description": "Akurasi tinggi, butuh RAM lebih"
+        }
+      ]
+    }
   },
   "qr": {
     "format": "qris",
@@ -49,5 +82,9 @@
     "maxConcurrency": 2,
     "timeout": 30000,
     "chunkLengthS": 30
+  },
+  "offline": {
+    "enabled": true,
+    "description": "All AI runs 100% on-device. No cloud APIs. No data leaves the device."
   }
 }
