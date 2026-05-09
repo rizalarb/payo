@@ -6,15 +6,20 @@ import { Bell, Shield, HelpCircle, LogOut, Globe, Wallet, ChevronRight, Cpu } fr
 import { COLORS } from '../../src/theme';
 import { initQvac, getAIStatus, AIStatus } from '../../src/services/qvac';
 
-const ITEMS: { icon: any; label: string; sub?: string }[] = [
+const ITEMS: { icon: any; label: string; sub?: string; onPressKey?: string }[] = [
   { icon: Wallet, label: 'Dompet & Alamat', sub: 'Kelola wallet USDT (TRC20)' },
   { icon: Bell, label: 'Notifikasi', sub: 'Push, email, transaksi' },
-  { icon: Shield, label: 'Keamanan', sub: 'PIN, biometrik, sesi' },
+  { icon: Shield, label: 'Keamanan PIN', sub: 'Buat / ubah PIN transaksi 6-digit', onPressKey: 'pin' },
   { icon: Globe, label: 'Bahasa & Mata Uang', sub: 'Indonesia · IDR' },
   { icon: HelpCircle, label: 'Bantuan & FAQ' },
 ];
 
 export default function Settings() {
+  const router = useRouter();
+  const [ai, setAi] = useState<AIStatus | null>(null);
+  useEffect(() => {
+    initQvac().then(setAi).catch(() => setAi(getAIStatus()));
+  }, []);
   return (
     <SafeAreaView style={styles.root} edges={['top']} testID="settings-screen">
       <View style={styles.header}>
@@ -22,6 +27,27 @@ export default function Settings() {
         <Text style={styles.sub}>Atur profil & preferensi PAYO</Text>
       </View>
       <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
+        {/* AI Engine status */}
+        <View style={styles.aiCard} testID="ai-status-card">
+          <View style={[styles.aiIcon, ai?.mode === 'qvac-offline' && { backgroundColor: COLORS.primary }]}>
+            <Cpu color={ai?.mode === 'qvac-offline' ? '#fff' : COLORS.primary} size={22} strokeWidth={2.2} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.aiTitle}>QVAC AI Engine</Text>
+            <Text style={styles.aiSub} numberOfLines={2}>{ai?.message ?? 'Memeriksa…'}</Text>
+          </View>
+          <View
+            style={[styles.aiBadge, ai?.mode === 'qvac-offline'
+              ? { backgroundColor: COLORS.primary }
+              : { backgroundColor: COLORS.warning }]}
+            testID="ai-status-badge"
+          >
+            <Text style={styles.aiBadgeText}>
+              {ai?.mode === 'qvac-offline' ? 'OFFLINE' : 'CLOUD'}
+            </Text>
+          </View>
+        </View>
+
         <View style={styles.card}>
           {ITEMS.map((it, i) => {
             const Icon = it.icon;

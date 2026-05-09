@@ -4,7 +4,7 @@ import {
   KeyboardAvoidingView, Platform, ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { ChevronLeft, User, Send, Wallet } from 'lucide-react-native';
 import { COLORS } from '../src/theme';
 import { api, Recipient, VoiceIntent } from '../src/api';
@@ -14,6 +14,7 @@ import PinInputModal from '../src/components/PinInputModal';
 
 export default function Transfer() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ address?: string; amount?: string; from?: string }>();
   const [recipients, setRecipients] = useState<Recipient[]>([]);
   const [loading, setLoading] = useState(true);
   const [address, setAddress] = useState('');

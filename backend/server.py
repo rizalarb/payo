@@ -497,8 +497,12 @@ async def ocr_extract(payload: OcrRequest):
     except HTTPException:
         raise
     except Exception as e:
+        msg = str(e)
+        # OpenAI rejects unsupported / corrupt images — surface as 400 instead of 500.
+        if "unsupported image" in msg.lower() or "BadRequestError" in msg or "invalid" in msg.lower():
+            raise HTTPException(400, f"Invalid image: {msg[:200]}")
         logging.exception("OCR failed")
-        raise HTTPException(500, f"OCR failed: {e}")
+        raise HTTPException(500, f"OCR failed: {msg[:200]}")
 
 
 # ============= PIN (transaction security) =============

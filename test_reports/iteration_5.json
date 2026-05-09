@@ -1,0 +1,49 @@
+{
+  "summary": "Iteration 5 RE-VALIDATION after iter-4 fixes. Backend: 33/33 pytest PASS — added new TestOcrExtract::test_bogus_1x1_png_returns_400_not_500 verifying litellm BadRequestError now correctly maps to HTTP 400 (was 500 in iter-4). All regression suites green: 10 PIN security + 20 PAYO API + 3 OCR. Frontend: ALL critical iter-4 wiring bugs are FIXED — Transfer no longer red-screens (params is correctly destructured via useLocalSearchParams), Settings AI Engine card renders at the top with badge 'CLOUD' and message containing 'Cloud Fallback (Whisper + GPT-4o-mini)', and the security row label is now 'Keamanan PIN' and tapping it correctly navigates to /setup-pin. Verified end-to-end on the live preview URL: dashboard 9020.21 USDT renders → Settings tab shows AI card + Keamanan PIN row → tap navigates to /setup-pin → Scan QRIS shows both demo buttons → Demo:QR pre-fills address=TXYZ1aBcDeFg2hIjKlMnOpQ3rStUvWxY + amount=50 → tap Kirim → PIN modal → enter 123456 → SuccessModal '50 USDT · Terkirim ke TXYZ1aBcDeFg…vWxY' → Demo:OCR pre-fills address=TLmNoPq4RsTuVwXy5zAbCdEfGhIjKlMn → Open QRIS overlay opens with QR code. IMPORTANT NOTE: needed to `sudo supervisorctl restart expo` once because Metro had cached the broken iter-4 bundle and was still serving 'params is not defined' even though the source file on disk already had the fix; after restart the new bundle compiled cleanly and all flows pass. One MINOR functional miss remains: note prefill 'Dari Scan QR / OCR' is empty — scan-qris.tsx handleAddress() builds the query string {address, amount} but never adds from=scan, so transfer.tsx's `if (params.from === 'scan') setNote(...)` branch never fires. Address+amount prefill works; only the note field stays empty.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/dashboard/today", "issue": "(Carryover) hardcoded fallback total_usdt=9020.21/count=5 when no IN tx today."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Scan QRIS Demo → Transfer note prefill", "issue": "Note field stays empty when arriving from Demo:QR or Demo:OCR. scan-qris.tsx handleAddress() composes URL params {address, amount} but does NOT include from='scan'. transfer.tsx already has `if (params.from === 'scan') setNote('Dari Scan QR / OCR')` so adding `params.from = 'scan';` (one line at scan-qris.tsx:28) will satisfy the review-request expectation. Address & amount prefill work correctly; this is purely the note text.", "affected_testIDs": ["demo-qr-btn", "demo-ocr-btn", "note-input"]}
+    ],
+    "design_issues": [
+      {"screen": "Open QRIS overlay (web)", "issues": ["(Carryover from iter-4) On web preview the Modal does not fully cover dashboard — review marks this as acceptable on web; native build is fine."]}
+    ],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_payo_api.py",
+    "/app/backend/tests/test_pin_security.py",
+    "/app/backend/tests/test_ocr.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(LOW) /app/frontend/app/scan-qris.tsx line 27-28: add `params.from = 'scan';` inside handleAddress() so the destination /transfer screen prefills the note 'Dari Scan QR / OCR' as the review request expects. One-line fix.",
+    "(LOW carryover) backend GET /api/dashboard/today: drop hardcoded 9020.21/count=5 fallback when no IN tx today.",
+    "(INFO) Whenever main agent ships changes that touch transfer.tsx / settings.tsx / scan-qris.tsx, it should `sudo supervisorctl restart expo` once at the end — Metro CI mode caches stale bundles and silently serves old red-screen JS even after the source is fixed."
+  ],
+  "critical_code_review_comments": [
+    "transfer.tsx line 7 imports useLocalSearchParams and line 17 calls const params = useLocalSearchParams<{...}>() — verified at runtime, no ReferenceError after expo restart.",
+    "settings.tsx now renders <View testID='ai-status-card'> at the top of ScrollView with QVAC AI Engine title + 'Cloud Fallback (Whisper + GPT-4o-mini)' subtitle + CLOUD badge (web) — visually verified.",
+    "settings.tsx ITEMS now has Shield row labeled 'Keamanan PIN' with onPressKey:'pin' and the row's onPress checks `if (it.onPressKey === 'pin') router.push('/setup-pin')` — navigation verified.",
+    "server.py /api/ocr/extract now catches Exception, inspects message for 'unsupported image' / 'BadRequestError' / 'invalid' (case-insensitive) and re-raises as HTTPException(400) with friendly message. Verified by new test_bogus_1x1_png_returns_400_not_500.",
+    "scan-qris.tsx handleAddress() omits from='scan' query param — only minor remaining gap vs. review request."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_ocr.py — added test_bogus_1x1_png_returns_400_not_500 (regression for iter-4 OCR 500→400 fix). Existing 2 tests preserved."
+  ],
+  "success_rate": {
+    "backend": "100% (33/33 — 10 PIN + 20 PAYO + 3 OCR including new bogus-PNG→400 regression)",
+    "frontend": "~95% — every primary flow in the review request works after the cache-driven restart. Only deviation: note 'Dari Scan QR / OCR' is not auto-prefilled because scan-qris.tsx omits from=scan in the URL. Address+amount prefill, PIN modal, transfer success, OCR demo prefill, settings AI card, Keamanan PIN nav, QRIS overlay all verified."
+  },
+  "seed_data_creation": "Re-asserted default-device PIN to 123456 via POST /api/pin/create (idempotent upsert) before frontend run. test_ocr suite uses ephemeral PIL-generated PNGs and a static 1×1 PNG, no DB writes.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Public URL https://qvac-payment-suite.preview.emergentagent.com. Run `pytest /app/backend/tests/ -v --junitxml=/app/test_reports/pytest/pytest_results.xml` for the full 33-test suite. PIN is currently 123456 (single device 'default-device'). For frontend testing: ALWAYS `sudo supervisorctl restart expo && sleep 25` after main agent edits transfer.tsx / settings.tsx / scan-qris.tsx — Metro CI mode caches stale bundles. Mobile viewport 390x844. Key testIDs: ai-status-card, demo-qr-btn, demo-ocr-btn, address-input, amount-input, note-input, submit-transfer-btn, pin-key-{0..9}, setup-key-{0..9}, tab-settings, open-qris-btn. Default PIN 123456; reset with POST /api/pin/create {pin,confirm_pin}.",
+  "rca_of_issue": "Iter-4's 3 frontend bugs were genuinely fixed in source, but Metro's CI-mode bundle cache served the OLD broken bundle on first probe — testing agent saw the same red-screen + missing AI card + 'Keamanan' label as iter-4 and almost re-reported the bugs as unfixed. Restarting expo via supervisorctl forced a fresh bundle and ALL three issues were demonstrably resolved. Lesson: when a main agent claims a frontend wiring fix, always `supervisorctl restart expo` once before re-testing or you'll get false negatives from Metro cache. The single remaining gap (empty note field on scan→transfer) is a 1-line fix in scan-qris.tsx handleAddress() — author added the `from=scan` consumer in transfer.tsx but forgot to add the producer in scan-qris.tsx. Mechanical, no business-logic dispute."
+}
