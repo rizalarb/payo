@@ -24,7 +24,7 @@ export default function ScanQris() {
   const aiStatus = getAIStatus();
 
   const handleAddress = (address: string, amount?: number) => {
-    const params: any = { address };
+    const params: any = { address, from: 'scan' };
     if (amount) params.amount = String(amount);
     const qs = new URLSearchParams(params).toString();
     router.replace(`/transfer?${qs}`);
