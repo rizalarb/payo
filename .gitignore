@@ -1,117 +1,95 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# PAYO .gitignore
 
-# IDE and editors
-.idea/
-.vscode/
-
+# ===============================
 # Dependencies
+# ===============================
 node_modules/
-/node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# Testing
-/coverage
-
-# Next.js
-/.next/
-/out/
-next-env.d.ts
-*.tsbuildinfo
-
-# Production builds
-/build
-dist/
-dist
-
-# Environment files (comprehensive coverage)
-
-*token.json*
-*credentials.json*
-
-# Logs and debug files
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-dump.rdb
-
-# System files
-.DS_Store
-*.pem
-
-# Python
 __pycache__/
-*pyc*
+*.pyc
+.Python
+env/
 venv/
 .venv/
 
-# Development tools
-chainlit.md
-.chainlit
-.ipynb_checkpoints/
-.ac
+# ===============================
+# Build outputs
+# ===============================
+dist/
+build/
+*.egg-info/
+.expo/
+web-build/
 
-# Deployment
-.vercel
+# ===============================
+# IDE & Editors
+# ===============================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
 
-# Data and databases
-agenthub/agents/youtube/db
+# ===============================
+# Environment & Secrets
+# ===============================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
 
-# Archive files and large assets
-**/*.zip
-**/*.tar.gz
-**/*.tar
-**/*.tgz
-*.pack
-*.deb
-*.dylib
+# ===============================
+# Logs
+# ===============================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Build caches
+# ===============================
+# Testing
+# ===============================
+coverage/
+.coverage
+htmlcov/
+.pytest_cache/
+.nyc_output/
+
+# ===============================
+# AI Models (large files)
+# ===============================
+*.onnx
+*.bin
+*.safetensors
+on-device-ai/.cache/
+on-device-ai/models/stt/*.onnx
+on-device-ai/models/stt/*.bin
+
+# ===============================
+# Temporary files
+# ===============================
+*.tmp
+*.temp
 .cache/
+tmp/
+temp/
 
-memory/test_credentials.md
+# ===============================
+# OS generated
+# ===============================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 
-# Mobile development
-android-sdk/-e 
-# Environment and credential files
-.env
-.env.*
-*.env
-credentials.json
-*.pem
-*.key
-.credentials
--e 
-# Environment and credential files
-.env
-.env.*
-*.env
-credentials.json
-*.pem
-*.key
-.credentials
--e 
-# Environment and credential files
-.env
-.env.*
-*.env
-credentials.json
-*.pem
-*.key
-.credentials
--e 
-# Environment and credential files
-.env
-.env.*
-*.env
-credentials.json
-*.pem
-*.key
-.credentials
+# ===============================
+# Project specific
+# ===============================
+test_reports/
+memory/
+*.db
+*.sqlite

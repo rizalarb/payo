@@ -1,50 +1,144 @@
-# Welcome to your Expo app 👋
+# PAYO Mobile App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> 📱 React Native (Expo) Mobile Application untuk PAYO POS
 
-## Get started
+## 📋 Overview
 
-1. Install dependencies
+Aplikasi mobile PAYO yang berjalan di Android dan iOS dengan fitur:
+- QR/QRIS Payment
+- Voice Command (Speech-to-Text)
+- Transaction Management
+- Offline-first architecture
 
-   ```bash
-   npm install
-   ```
+## 🚀 Quick Start
 
-2. Start the app
+### Prerequisites
+- Node.js v18+
+- Expo CLI
+- Android Studio / Xcode (untuk emulator)
+- Expo Go app (untuk testing di device fisik)
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### Installation
 
 ```bash
-npm run reset-project
+# Install dependencies
+npm install
+
+# Start development server
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Running on Device
 
-## Learn more
+1. Install **Expo Go** dari Play Store / App Store
+2. Scan QR code yang muncul di terminal
+3. Aplikasi akan terbuka di Expo Go
 
-To learn more about developing your project with Expo, look at the following resources:
+## 📁 Struktur
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```
+frontend/
+├── app/                    # Screens (file-based routing)
+│   ├── (tabs)/            # Tab navigation screens
+│   ├── _layout.tsx        # Root layout
+│   ├── scan-qris.tsx      # Scan QR screen
+│   ├── scan-receipt.tsx   # OCR receipt screen
+│   ├── transfer.tsx       # Transfer screen
+│   ├── withdraw.tsx       # Withdraw screen
+│   └── ...
+│
+├── src/
+│   ├── api.ts             # API client
+│   ├── components/        # Reusable components
+│   ├── qvac/             # QVAC SDK integration
+│   └── theme.ts          # Theme configuration
+│
+├── assets/
+│   ├── fonts/            # Custom fonts
+│   └── images/           # Static images
+│
+├── app.json              # Expo configuration
+└── package.json
+```
 
-## Join the community
+## 📱 Screens
 
-Join our community of developers creating universal apps.
+| Screen | Path | Description |
+|--------|------|-------------|
+| Home | `/(tabs)/` | Dashboard utama |
+| Scan QRIS | `/scan-qris` | Scan QR payment |
+| Scan Receipt | `/scan-receipt` | OCR receipt |
+| Transfer | `/transfer` | Transfer dana |
+| Withdraw | `/withdraw` | Tarik dana |
+| All Transactions | `/all-transactions` | Riwayat transaksi |
+| Setup PIN | `/setup-pin` | Setup keamanan |
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 🔧 Configuration
+
+### Environment Variables
+
+Edit `.env`:
+```env
+EXPO_PUBLIC_BACKEND_URL=http://localhost:8001
+```
+
+### App Configuration
+
+Edit `app.json`:
+```json
+{
+  "expo": {
+    "name": "PAYO",
+    "slug": "payo",
+    "version": "1.0.0"
+  }
+}
+```
+
+## 🎨 Theme
+
+Tema aplikasi dikonfigurasi di `src/theme.ts`:
+- Primary Color: Hijau (#00C853)
+- Font: System default
+- Dark/Light mode support
+
+## 🔌 API Integration
+
+API client di `src/api.ts`:
+```typescript
+import { api } from './api';
+
+// Get transactions
+const transactions = await api.getTransactions();
+
+// Create transaction
+await api.createTransaction(data);
+```
+
+## 🧪 Testing
+
+```bash
+# Run tests
+npm test
+
+# Run with coverage
+npm test -- --coverage
+```
+
+## 📦 Build
+
+### Development Build
+```bash
+npx expo build:android
+npx expo build:ios
+```
+
+### Production Build
+```bash
+eas build --platform android
+eas build --platform ios
+```
+
+## 📄 License
+
+MIT © PAYO Team
