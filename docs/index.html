@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PAYO - On-Device AI Point of Sale | Zero Cloud, Full Privacy</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="PAYO is a smart POS application with 100% on-device AI. QR payments, voice commands, and OCR - all running locally. Zero cloud, full privacy." />
+  <meta name="keywords" content="POS, point of sale, on-device AI, offline AI, QRIS, QR payment, voice command, speech to text, Indonesia, merchant" />
+  <meta name="author" content="PAYO Team" />
+  <meta name="robots" content="index, follow" />
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://rizalarb.github.io/payo/" />
+  <meta property="og:title" content="PAYO - On-Device AI Point of Sale" />
+  <meta property="og:description" content="Smart POS with 100% on-device AI. QR payments, voice commands, OCR - all offline. Zero cloud, full privacy." />
+  <meta property="og:image" content="https://rizalarb.github.io/payo/assets/payo-og.png" />
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PAYO - On-Device AI Point of Sale" />
+  <meta name="twitter:description" content="Smart POS with 100% on-device AI. Zero cloud, full privacy." />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/payo-logo.png" />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="container nav-inner">
+      <a href="#" class="nav-logo">
+        <img src="assets/payo-logo.png" alt="PAYO" class="logo-img" />
+        <span class="logo-text">PAYO</span>
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How it Works</a>
+        <a href="#technology">Technology</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <a href="#cta" class="btn btn-primary nav-cta">Get Early Access</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div class="nav-mobile" id="navMobile">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it Works</a>
+      <a href="#technology">Technology</a>
+      <a href="#faq">FAQ</a>
+      <a href="#cta" class="btn btn-primary">Get Early Access</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="grid-pattern"></div>
+    </div>
+    <div class="container hero-content">
+      <div class="hero-text" data-reveal>
+        <span class="badge">
+          <span class="badge-dot"></span>
+          100% On-Device AI • Zero Cloud
+        </span>
+        <h1>
+          Smart Point of Sale.<br/>
+          <span class="gradient-text">QR + Voice.</span> Runs Locally.
+        </h1>
+        <p class="hero-subtitle">
+          Accept QR payments, process transactions with voice commands, and scan receipts — 
+          all powered by AI that runs entirely on your device. 
+          <strong>No internet required. No data leaves your phone.</strong>
+        </p>
+        <div class="hero-buttons">
+          <a href="#cta" class="btn btn-primary btn-lg">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Join Waitlist
+          </a>
+          <a href="#how-it-works" class="btn btn-ghost btn-lg">
+            See How it Works
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-value">&lt;500ms</span>
+            <span class="stat-label">Voice Latency</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">$0</span>
+            <span class="stat-label">AI Cost per Transaction</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">100%</span>
+            <span class="stat-label">Data Stays on Device</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual" data-reveal>
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <span class="phone-time">9:41</span>
+              <div class="phone-icons">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                <span>On-device • Offline</span>
+              </div>
+            </div>
+            <div class="phone-content">
+              <div class="app-header">
+                <img src="assets/payo-logo.png" alt="PAYO" class="app-logo" />
+                <span>PAYO</span>
+              </div>
+              <div class="balance-card">
+                <span class="balance-label">Today's Revenue</span>
+                <span class="balance-amount">$1,247.50</span>
+                <span class="balance-sub">≈ Rp 19,436,419 • 12 transactions</span>
+              </div>
+              <div class="action-grid">
+                <div class="action-item">
+                  <div class="action-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  </div>
+                  <span>Transfer</span>
+                </div>
+                <div class="action-item">
+                  <div class="action-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                  </div>
+                  <span>Scan QR</span>
+                </div>
+                <div class="action-item">
+                  <div class="action-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  </div>
+                  <span>Input QR</span>
+                </div>
+                <div class="action-item">
+                  <div class="action-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                  </div>
+                  <span>Open QR</span>
+                </div>
+              </div>
+              <div class="voice-indicator">
+                <div class="voice-btn pulse">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                </div>
+                <div class="voice-text">
+                  <span class="voice-label">&lt; 500ms voice → intent</span>
+                  <span class="voice-example">"transfer $50 to John"</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem Section -->
+  <section class="problem" id="problem">
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="eyebrow">The Problem</span>
+        <h2>Traditional POS Systems Are <span class="gradient-text">Broken</span></h2>
+      </div>
+      <div class="comparison-grid" data-reveal>
+        <div class="comparison-card bad">
+          <div class="comparison-header">
+            <span class="comparison-icon">❌</span>
+            <h3>Cloud-Based POS</h3>
+          </div>
+          <ul class="comparison-list">
+            <li><span class="x">✕</span> Requires constant internet</li>
+            <li><span class="x">✕</span> Monthly cloud fees ($50-200+)</li>
+            <li><span class="x">✕</span> Customer data sent to servers</li>
+            <li><span class="x">✕</span> AI processing costs per query</li>
+            <li><span class="x">✕</span> Slow response times (1-3s)</li>
+            <li><span class="x">✕</span> Privacy compliance risks</li>
+          </ul>
+        </div>
+        <div class="comparison-card good">
+          <div class="comparison-header">
+            <span class="comparison-icon">✓</span>
+            <h3>PAYO On-Device</h3>
+          </div>
+          <ul class="comparison-list">
+            <li><span class="check">✓</span> Works 100% offline</li>
+            <li><span class="check">✓</span> Zero recurring AI fees</li>
+            <li><span class="check">✓</span> All data stays on your device</li>
+            <li><span class="check">✓</span> Free AI inference forever</li>
+            <li><span class="check">✓</span> Instant response (&lt;500ms)</li>
+            <li><span class="check">✓</span> GDPR/Privacy compliant by design</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="eyebrow">Core Features</span>
+        <h2>Three Pillars of <span class="gradient-text">On-Device Intelligence</span></h2>
+        <p>All AI runs locally on your device. No cloud. No latency. No subscription fees.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card" data-reveal>
+          <div class="feature-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+            </svg>
+          </div>
+          <h3>QR Engine</h3>
+          <p>Generate and scan QRIS-compliant QR codes. EMV-CRC16 validated. Works with all Indonesian banks and e-wallets.</p>
+          <ul class="feature-list">
+            <li>Dynamic & Static QR generation</li>
+            <li>Camera-based scanning</li>
+            <li>Bank Indonesia QRIS standard</li>
+          </ul>
+        </div>
+        <div class="feature-card featured" data-reveal>
+          <div class="feature-badge">Most Popular</div>
+          <div class="feature-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/>
+              <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+          </div>
+          <h3>Voice Engine</h3>
+          <p>Speak naturally to process transactions. Whisper AI runs entirely on your device — no internet needed.</p>
+          <ul class="feature-list">
+            <li>"Transfer $50 to John"</li>
+            <li>"Generate QR for $100"</li>
+            <li>"Check today's balance"</li>
+          </ul>
+        </div>
+        <div class="feature-card" data-reveal>
+          <div class="feature-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </div>
+          <h3>OCR Engine</h3>
+          <p>Scan receipts and ID cards offline. PaddleOCR optimized for mobile. Perfect for expense tracking.</p>
+          <ul class="feature-list">
+            <li>Receipt text extraction</li>
+            <li>ID card scanning</li>
+            <li>Automatic data parsing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it Works Section -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="eyebrow">How It Works</span>
+        <h2>From Setup to Transaction in <span class="gradient-text">3 Steps</span></h2>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card" data-reveal>
+          <div class="step-number">01</div>
+          <div class="step-content">
+            <h3>Download & Setup</h3>
+            <p>Install the app and download AI models once. After that, everything runs offline forever.</p>
+          </div>
+        </div>
+        <div class="step-card" data-reveal>
+          <div class="step-number">02</div>
+          <div class="step-content">
+            <h3>Speak or Scan</h3>
+            <p>Use voice commands or scan QR codes. AI processes everything locally in under 500ms.</p>
+          </div>
+        </div>
+        <div class="step-card" data-reveal>
+          <div class="step-number">03</div>
+          <div class="step-content">
+            <h3>Complete Transaction</h3>
+            <p>Transactions sync automatically when online. Works perfectly offline with local storage.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technology Section -->
+  <section class="technology" id="technology">
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="eyebrow">Under the Hood</span>
+        <h2>Built with <span class="gradient-text">Cutting-Edge Technology</span></h2>
+      </div>
+      <div class="tech-grid" data-reveal>
+        <div class="tech-card">
+          <div class="tech-icon">🤖</div>
+          <h4>QVAC SDK</h4>
+          <p>Tether's on-device AI framework for STT, TTS, and LLM inference</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-icon">🎤</div>
+          <h4>Whisper ONNX</h4>
+          <p>OpenAI's speech recognition model optimized for mobile devices</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-icon">📱</div>
+          <h4>React Native</h4>
+          <p>Cross-platform mobile development with Expo framework</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-icon">⚡</div>
+          <h4>ONNX Runtime</h4>
+          <p>Hardware-accelerated AI inference on mobile CPUs and GPUs</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-icon">🔐</div>
+          <h4>Local Storage</h4>
+          <p>SQLite/WatermelonDB for offline-first transaction storage</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-icon">📊</div>
+          <h4>EMV QRIS</h4>
+          <p>Bank Indonesia compliant QR payment standard with CRC16</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="eyebrow">FAQ</span>
+        <h2>Frequently Asked <span class="gradient-text">Questions</span></h2>
+      </div>
+      <div class="faq-grid" data-reveal>
+        <details class="faq-item">
+          <summary>How does on-device AI work?</summary>
+          <p>PAYO uses ONNX-optimized AI models that run directly on your phone's CPU/GPU. The models are downloaded once during setup and then work completely offline. No data is ever sent to external servers.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Do I need an internet connection?</summary>
+          <p>Only for the initial setup to download AI models (~75MB). After that, all AI features work 100% offline. Transactions can sync when you're back online.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What languages does voice recognition support?</summary>
+          <p>Currently English and Indonesian (Bahasa Indonesia). The Whisper model supports 99+ languages, and we're adding more based on user demand.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Is my data really private?</summary>
+          <p>Yes! All AI processing happens on your device. No audio, images, or transaction data is ever sent to our servers or any third party. You own your data completely.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What devices are supported?</summary>
+          <p>PAYO works on Android 8.0+ and iOS 13+. For optimal AI performance, we recommend devices with at least 4GB RAM.</p>
+        </details>
+        <details class="faq-item">
+          <summary>How much does it cost?</summary>
+          <p>PAYO is free during beta. We plan to offer a freemium model with basic features free forever and premium features for power users.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta" id="cta">
+    <div class="container cta-inner" data-reveal>
+      <div class="cta-glow"></div>
+      <span class="eyebrow">Coming Soon</span>
+      <h2>Be the First to Experience<br/><span class="gradient-text">The Future of POS.</span></h2>
+      <p class="cta-sub">Join our early access waitlist and get priority access when we launch. Free forever for early adopters.</p>
+      
+      <form class="waitlist-form" id="waitlistForm">
+        <div class="form-row">
+          <input type="text" name="name" placeholder="Your name" required class="form-input" />
+          <input type="email" name="email" placeholder="Your email" required class="form-input" />
+        </div>
+        <div class="form-row">
+          <input type="text" name="company" placeholder="Company name (optional)" class="form-input" />
+          <select name="business_type" class="form-input">
+            <option value="">Business type (optional)</option>
+            <option value="retail">Retail / Store</option>
+            <option value="fnb">Food & Beverage</option>
+            <option value="service">Services</option>
+            <option value="event">Events / Ticketing</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-xl btn-submit">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Join Early Access
+        </button>
+      </form>
+      
+      <div class="cta-trust">
+        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 100% Free to join</span>
+        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> No spam, ever</span>
+        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Priority access</span>
+      </div>
+      
+      <p class="waitlist-count">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span><strong>500+</strong> merchants already on the waitlist</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a href="#" class="footer-logo">
+          <img src="assets/payo-logo.png" alt="PAYO" class="logo-img" />
+          <span>PAYO</span>
+        </a>
+        <p>Smart Point of Sale with 100% On-Device AI. Zero cloud, full privacy.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="#features">Features</a>
+          <a href="#how-it-works">How it Works</a>
+          <a href="#technology">Technology</a>
+          <a href="#faq">FAQ</a>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="https://github.com/rizalarb/payo" target="_blank">GitHub</a>
+          <a href="https://github.com/rizalarb/payo/blob/main/README.md" target="_blank">Documentation</a>
+          <a href="https://github.com/rizalarb/payo/blob/main/CHANGELOG.md" target="_blank">Changelog</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="https://github.com/rizalarb/payo/blob/main/LICENSE" target="_blank">MIT License</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 2026 PAYO. Built with ❤️ for merchants worldwide.</p>
+        <p>Zero Cloud • Full Privacy • 100% On-Device AI</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

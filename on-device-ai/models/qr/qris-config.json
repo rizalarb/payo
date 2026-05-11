@@ -1,0 +1,10 @@
+{
+  "version": "01",
+  "format": "EMV-QRIS",
+  "pointOfInitiation": "12",
+  "merchantCategoryCode": "5411",
+  "transactionCurrency": "360",
+  "countryCode": "ID",
+  "crc": "CRC16-CCITT-FALSE",
+  "createdAt": "2026-05-09T22:06:17.864Z"
+}
