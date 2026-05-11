@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Cache
+.cache/
+!.cache/.gitkeep
+!.cache/.gitignore
+
+# Downloaded models (large files)
+models/stt/*.onnx
+models/stt/*.bin
+models/stt/*.json
+!models/stt/.gitkeep
+
+# Environment
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test output
+coverage/
+*.tmp
