@@ -1,4 +1,4 @@
-// PAYO Landing Page · script.js
+// PAYO Landing Page v2 · script.js
 (function () {
   'use strict';
 
@@ -45,7 +45,7 @@
     document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-revealed'));
   }
 
-  // ===== Smooth-close FAQ siblings (one open at a time UX, optional) =====
+  // ===== Smooth-close FAQ siblings =====
   document.querySelectorAll('.faq-item').forEach((item) => {
     item.addEventListener('toggle', () => {
       if (item.open) {
@@ -66,7 +66,7 @@
       const data = {
         name: formData.get('name'),
         email: formData.get('email'),
-        phone: formData.get('phone') || '',
+        company: formData.get('company') || '',
         business_type: formData.get('business_type') || '',
         timestamp: new Date().toISOString()
       };
@@ -81,7 +81,7 @@
           <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
           <path d="M12 2a10 10 0 0 1 10 10"/>
         </svg>
-        Mendaftarkan...
+        Joining...
       `;
       
       // Simulate API call (replace with actual endpoint later)
@@ -92,9 +92,9 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
           <polyline points="20 6 9 17 4 12"/>
         </svg>
-        Berhasil Terdaftar!
+        You're on the list!
       `;
-      submitBtn.style.background = '#10B981';
+      submitBtn.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
       
       // Log data (replace with actual API call)
       console.log('[PAYO Waitlist]', data);
@@ -109,11 +109,10 @@
     });
   }
 
-  // ===== CTA click telemetry hook (placeholder — wire to analytics later) =====
+  // ===== CTA click telemetry =====
   document.querySelectorAll('[data-cta]').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const label = btn.getAttribute('data-cta');
-      // window.gtag && window.gtag('event', 'cta_click', { label });
       console.log('[PAYO CTA]', label);
     });
   });
