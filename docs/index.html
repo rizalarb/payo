@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0F2A26" />
+  <title>PAYO — POS Pembayaran Cerdas, 100% On-Device</title>
+  <meta name="description" content="PAYO adalah aplikasi POS mobile yang menerima pembayaran via QR & perintah suara. Semua AI berjalan lokal di handset — offline-first, privacy-first, tanpa biaya cloud per-transaksi." />
+  <meta name="keywords" content="POS, point of sales, QRIS, USDT, Tether, voice payment, on-device AI, ONNX, OCR, Indonesia, UMKM" />
+  <meta name="author" content="PAYO Team" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="PAYO — POS Pembayaran Cerdas, 100% On-Device" />
+  <meta property="og:description" content="Terima pembayaran via QR & suara. AI berjalan di handset Anda. Offline-first, privacy-first, zero biaya cloud." />
+  <meta property="og:locale" content="id_ID" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PAYO — POS Pembayaran Cerdas, 100% On-Device" />
+  <meta name="twitter:description" content="POS mobile dengan QR + perintah suara, AI 100% lokal di handset." />
+
+  <!-- Favicon as inline SVG data URI -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%2326D0A8'/%3E%3Cpath d='M30 35h40M50 35v35' stroke='%230F2A26' stroke-width='10' stroke-linecap='round'/%3E%3C/svg%3E" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ============== NAV ============== -->
+  <header class="nav" id="nav">
+    <div class="container nav-inner">
+      <a href="#hero" class="logo" aria-label="PAYO Home">
+        <svg class="logo-mark" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="46" fill="currentColor"/>
+          <path d="M30 35h40M50 35v35" stroke="#0F2A26" stroke-width="10" stroke-linecap="round" fill="none"/>
+        </svg>
+        <span class="logo-text">PAYO</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#fitur">Fitur</a>
+        <a href="#on-device">On-Device AI</a>
+        <a href="#cara-kerja">Cara Kerja</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+
+      <div class="nav-cta">
+        <a href="#cta" class="btn btn-primary">Coba Gratis</a>
+      </div>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="nav-mobile" id="navMobile" aria-label="Mobile">
+      <a href="#fitur">Fitur</a>
+      <a href="#on-device">On-Device AI</a>
+      <a href="#cara-kerja">Cara Kerja</a>
+      <a href="#faq">FAQ</a>
+      <a href="#cta" class="btn btn-primary btn-block">Coba Gratis</a>
+    </nav>
+  </header>
+
+  <!-- ============== HERO ============== -->
+  <section class="hero" id="hero">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="grid-overlay"></div>
+    </div>
+
+    <div class="container hero-grid">
+      <div class="hero-copy" data-reveal>
+        <span class="badge">
+          <span class="badge-dot"></span>
+          100% On-Device AI · Tanpa Cloud
+        </span>
+        <h1 class="headline">
+          POS Pembayaran Cerdas.<br/>
+          <span class="grad">QR + Suara.</span> Lokal di Handset.
+        </h1>
+        <p class="sub">
+          Terima pembayaran QRIS, transfer USDT, dan cair ke bank lokal — cukup
+          dengan <strong>scan QR</strong> atau <strong>perintah suara</strong>.
+          Semua kecerdasan berjalan langsung di perangkat Anda.
+          <strong>Offline-first. Privacy-first. Zero biaya cloud per-transaksi.</strong>
+        </p>
+        <div class="hero-ctas">
+          <a href="#cta" class="btn btn-primary btn-lg">Coba Demo Gratis</a>
+          <a href="#cara-kerja" class="btn btn-ghost btn-lg">
+            Lihat Cara Kerja
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </a>
+        </div>
+        <div class="hero-meta">
+          <div class="meta-item">
+            <strong>&lt;500ms</strong>
+            <span>latensi voice</span>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <strong>0 IDR</strong>
+            <span>biaya AI per-transaksi</span>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <strong>100%</strong>
+            <span>data tidak keluar device</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual" data-reveal>
+        <!-- Phone mockup -->
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="app-status">
+              <span>9:41</span>
+              <span class="app-status-icons">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M2 22h2v-7H2v7zm5 0h2V12H7v10zm5 0h2V8h-2v14zm5 0h2V4h-2v18zm5 0h2V2h-2v20z"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+                <svg width="22" height="12" viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="19" height="10" rx="2"/><rect x="3" y="3" width="14" height="6" fill="currentColor"/><line x1="22" y1="4" x2="22" y2="8" stroke-linecap="round"/></svg>
+              </span>
+            </div>
+            <div class="app-header">
+              <div class="app-logo">
+                <svg viewBox="0 0 100 100" width="22" height="22"><circle cx="50" cy="50" r="46" fill="#26D0A8"/><path d="M30 35h40M50 35v35" stroke="#0F2A26" stroke-width="10" stroke-linecap="round"/></svg>
+                <span>PAYO</span>
+              </div>
+              <div class="app-bell">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              </div>
+            </div>
+
+            <div class="app-card">
+              <div class="app-card-label">Pendapatan Hari Ini</div>
+              <div class="app-card-amount">Rp 79.436.419</div>
+              <div class="app-card-sub">≈ 4,567.76 USDT · 12 transaksi</div>
+            </div>
+
+            <div class="app-grid">
+              <div class="app-tile">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#26D0A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                <span>Transfer</span>
+              </div>
+              <div class="app-tile">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#26D0A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect></svg>
+                <span>Scan QRIS</span>
+              </div>
+              <div class="app-tile">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#26D0A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Input QRIS</span>
+              </div>
+              <div class="app-tile">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#26D0A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18M3 15h18M9 3v18M15 3v18"></path></svg>
+                <span>Open QRIS</span>
+              </div>
+            </div>
+
+            <div class="app-mic">
+              <div class="mic-pulse"></div>
+              <div class="mic-btn">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+              </div>
+              <div class="mic-caption">"transfer 250 ribu ke Andi"</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating chips -->
+        <div class="chip chip-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          On-device · Tanpa internet
+        </div>
+        <div class="chip chip-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          &lt; 500ms voice→intent
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== TRUST STRIP ============== -->
+  <section class="trust" aria-label="Bank yang didukung">
+    <div class="container">
+      <p class="trust-label">Cair instan ke 6 bank besar Indonesia</p>
+      <div class="trust-banks">
+        <span class="bank-pill">BCA</span>
+        <span class="bank-pill">Mandiri</span>
+        <span class="bank-pill">BRI</span>
+        <span class="bank-pill">BNI</span>
+        <span class="bank-pill">CIMB Niaga</span>
+        <span class="bank-pill">Permata</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== PAIN POINTS ============== -->
+  <section class="pain" id="pain">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">Masalah Yang Kami Pecahkan</span>
+        <h2>POS biasa lambat. POS cloud melanggar privasi.<br/><span class="grad">PAYO menyelesaikan keduanya.</span></h2>
+      </div>
+
+      <div class="pain-grid">
+        <div class="pain-col pain-col-bad" data-reveal>
+          <div class="pain-col-head">
+            <span class="pain-tag pain-tag-bad">POS Konvensional / Cloud</span>
+          </div>
+          <ul class="pain-list">
+            <li><span class="x">×</span><div><strong>Mesin EDC mahal</strong><p>Sewa bulanan + biaya per-transaksi yang menggerus margin UMKM.</p></div></li>
+            <li><span class="x">×</span><div><strong>Audio dikirim ke server cloud</strong><p>Voice-payment kompetitor mengirim suara customer ke OpenAI/Google → risiko privasi & PCI-DSS.</p></div></li>
+            <li><span class="x">×</span><div><strong>Internet mati = bisnis berhenti</strong><p>Di basement, mall lt. P3, atau daerah 3T — terminal cloud tidak bisa diandalkan.</p></div></li>
+            <li><span class="x">×</span><div><strong>Biaya AI per-transaksi membengkak</strong><p>Whisper $0.006/menit + GPT call → bocor di volume tinggi.</p></div></li>
+            <li><span class="x">×</span><div><strong>Latensi 2–5 detik</strong><p>Round-trip ke server cloud bikin antrian numpuk saat jam ramai.</p></div></li>
+            <li><span class="x">×</span><div><strong>UU PDP & GDPR jadi pertaruhan</strong><p>Data biometrik (suara) keluar yurisdiksi RI = compliance nightmare.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="pain-col pain-col-good" data-reveal>
+          <div class="pain-col-head">
+            <span class="pain-tag pain-tag-good">PAYO · On-Device POS</span>
+          </div>
+          <ul class="pain-list">
+            <li><span class="v">✓</span><div><strong>POS cuma butuh smartphone</strong><p>Hardware yang Anda sudah miliki — terminal jalan dalam 5 menit.</p></div></li>
+            <li><span class="v">✓</span><div><strong>Suara diproses 100% lokal</strong><p>Whisper-tiny ONNX + QVAC SDK on-device. Audio tidak pernah keluar handset.</p></div></li>
+            <li><span class="v">✓</span><div><strong>Offline-first, sinkron belakangan</strong><p>QR + STT + OCR jalan tanpa koneksi. Antrian transaksi auto-sync saat online.</p></div></li>
+            <li><span class="v">✓</span><div><strong>Zero marginal AI cost</strong><p>Model tertanam di app. Tidak ada bill cloud, tidak ada surprise charges.</p></div></li>
+            <li><span class="v">✓</span><div><strong>Latensi &lt; 500ms</strong><p>Inferensi pakai CoreML (iOS) / NNAPI (Android). Cepat seperti unlock fingerprint.</p></div></li>
+            <li><span class="v">✓</span><div><strong>Compliance-ready</strong><p>Data tidak meninggalkan device → otomatis selaras UU PDP RI.</p></div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== FEATURES (3 PILLARS) ============== -->
+  <section class="features" id="fitur">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">Tiga Pilar Input Pembayaran</span>
+        <h2>Cara tercepat menerima uang.<br/><span class="grad">Pilih jalur Anda.</span></h2>
+        <p class="section-sub">QR untuk customer self-service. Suara untuk kasir hands-free. OCR untuk dokumen & struk. Semua bekerja tanpa cloud.</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card" data-reveal>
+          <div class="feature-icon feature-icon-qr">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="21" y2="14"/><line x1="14" y1="18" x2="21" y2="18"/><line x1="18" y1="14" x2="18" y2="21"/></svg>
+          </div>
+          <span class="pillar-tag">PILAR 1</span>
+          <h3>QR Engine</h3>
+          <p>Generate QRIS dinamis dengan satu tap. Tampilkan QR statis sebagai bottom-sheet tanpa pindah halaman. Scan QRIS pembayaran masuk dengan kamera native.</p>
+          <ul class="feature-list">
+            <li>QRIS Dinamis (expiry 15 menit)</li>
+            <li>QRIS Statis merchant</li>
+            <li>Scan QR USDT TRC20</li>
+            <li>Decoder EMV-CRC16 compliant</li>
+          </ul>
+        </article>
+
+        <article class="feature-card feature-card-hero" data-reveal>
+          <div class="feature-icon feature-icon-voice">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </div>
+          <span class="pillar-tag">PILAR 2</span>
+          <h3>Voice Engine</h3>
+          <p>Perintah Bahasa Indonesia natural diproses 100% di handset. STT via Whisper-tiny ONNX, intent parsing via QVAC SDK + small language model lokal.</p>
+          <ul class="feature-list">
+            <li>"transfer 50 USDT ke Andi"</li>
+            <li>"tarik 500 ribu ke BCA"</li>
+            <li>Latensi &lt; 500ms</li>
+            <li>Rule-based fallback safety net</li>
+          </ul>
+          <span class="badge-mini">DIFERENSIATOR UTAMA</span>
+        </article>
+
+        <article class="feature-card" data-reveal>
+          <div class="feature-icon feature-icon-ocr">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
+          </div>
+          <span class="pillar-tag">PILAR 3 · ROADMAP</span>
+          <h3>OCR Engine</h3>
+          <p>Scan struk, KTP, nomor rekening, atau invoice supplier — auto-fill langsung ke form. PaddleOCR-mobile ONNX terkompilasi di-device, ukuran ~6-15 MB total.</p>
+          <ul class="feature-list">
+            <li>Auto-fill nominal dari struk</li>
+            <li>Verifikasi KTP customer</li>
+            <li>Scan nomor rekening</li>
+            <li>Akselerasi CoreML/NNAPI</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== ON-DEVICE MANIFESTO ============== -->
+  <section class="manifesto" id="on-device">
+    <div class="container">
+      <div class="section-head section-head-light" data-reveal>
+        <span class="eyebrow eyebrow-light">Filosofi On-Device</span>
+        <h2 class="headline-light">AI Anda. Di Handset Anda.<br/><span class="grad-light">Bukan di server orang lain.</span></h2>
+        <p class="section-sub-light">PAYO membalik default industri. Saat semua kompetitor mengirim audio & gambar customer Anda ke OpenAI, Google, atau AWS — kami menjalankan model langsung di RAM handset Anda. Inilah perbedaannya.</p>
+      </div>
+
+      <div class="compare-table" data-reveal>
+        <div class="compare-row compare-head">
+          <div></div>
+          <div class="compare-cell compare-cloud">Cloud-based POS</div>
+          <div class="compare-cell compare-payo">PAYO On-Device</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell compare-key">STT (perintah suara)</div>
+          <div class="compare-cell compare-cloud">OpenAI Whisper API</div>
+          <div class="compare-cell compare-payo">Whisper-tiny ONNX lokal</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell compare-key">Intent parsing</div>
+          <div class="compare-cell compare-cloud">GPT-4o-mini API</div>
+          <div class="compare-cell compare-payo">QVAC SDK + Phi-3 mini ONNX</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell compare-key">OCR struk/dokumen</div>
+          <div class="compare-cell compare-cloud">Google Vision API</div>
+          <div class="compare-cell compare-payo">PaddleOCR-mobile ONNX</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell compare-key">Kebutuhan internet</div>
+          <div class="compare-cell compare-cloud">Wajib online</div>
+          <div class="compare-cell compare-payo">Offline 100%</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell compare-key">Biaya AI / transaksi</div>
+          <div class="compare-cell compare-cloud">~Rp 150–300</div>
+          <div class="compare-cell compare-payo">Rp 0</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell compare-key">Latensi voice→intent</div>
+          <div class="compare-cell compare-cloud">2–5 detik</div>
+          <div class="compare-cell compare-payo">&lt; 500ms</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell compare-key">Audio customer keluar device</div>
+          <div class="compare-cell compare-cloud">Ya — ke server US</div>
+          <div class="compare-cell compare-payo">Tidak pernah</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell compare-key">Compliance UU PDP RI</div>
+          <div class="compare-cell compare-cloud">Manual + risiko</div>
+          <div class="compare-cell compare-payo">Otomatis selaras</div>
+        </div>
+      </div>
+
+      <div class="manifesto-footer" data-reveal>
+        <div class="manifesto-stat">
+          <div class="stat-num">0</div>
+          <div class="stat-label">request ke OpenAI<br/>per transaksi</div>
+        </div>
+        <div class="manifesto-stat">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">data privasi<br/>customer terjaga</div>
+        </div>
+        <div class="manifesto-stat">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">transaksi tanpa<br/>biaya AI tambahan</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== HOW IT WORKS ============== -->
+  <section class="how" id="cara-kerja">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">Cara Kerja</span>
+        <h2>Tiga langkah.<br/><span class="grad">Dari pesanan ke uang masuk.</span></h2>
+      </div>
+
+      <div class="steps">
+        <div class="step" data-reveal>
+          <div class="step-num">01</div>
+          <h4>Customer datang</h4>
+          <p>Anda bilang ke handset: <em>"terima 250 ribu"</em>. PAYO men-decode suara Anda secara lokal, lalu munculkan QR dinamis di layar dalam &lt; 500ms.</p>
+          <div class="step-tag">VOICE INPUT</div>
+        </div>
+        <div class="step" data-reveal>
+          <div class="step-num">02</div>
+          <h4>Customer scan</h4>
+          <p>Customer scan QR dengan e-wallet/bank apa saja. PAYO konfirmasi pembayaran masuk secara real-time ke dashboard hari ini.</p>
+          <div class="step-tag">QR PAYMENT</div>
+        </div>
+        <div class="step" data-reveal>
+          <div class="step-num">03</div>
+          <h4>Cair ke bank</h4>
+          <p>Akhir hari, ucapkan <em>"tarik 5 juta ke BCA"</em>. Withdraw otomatis terisi, biaya 0,5% terlihat di preview, dan dana sampai dalam 1–2 jam kerja.</p>
+          <div class="step-tag">VOICE WITHDRAW</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== STATS ============== -->
+  <section class="stats" data-reveal>
+    <div class="container stats-grid">
+      <div class="stat-block">
+        <div class="stat-value">6</div>
+        <div class="stat-text">bank besar didukung untuk withdraw IDR</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-value">0,5%</div>
+        <div class="stat-text">biaya admin withdraw — paling kompetitif</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-value">15<span class="unit">m</span></div>
+        <div class="stat-text">expiry default QRIS dinamis</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-value">&lt;5<span class="unit">mb</span></div>
+        <div class="stat-text">model AI on-device tertanam</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== FAQ ============== -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">Pertanyaan Umum</span>
+        <h2>Hal yang sering ditanyakan</h2>
+      </div>
+
+      <div class="faq-list" data-reveal>
+        <details class="faq-item">
+          <summary>Apakah PAYO benar-benar tidak butuh internet?</summary>
+          <p>Untuk fungsi inti (decode QR, voice-to-intent, OCR, generate QRIS), PAYO bekerja 100% offline. Internet hanya dibutuhkan saat sinkronisasi transaksi ke backend dan saat withdraw ke bank — keduanya bisa di-batch dan tidak menghambat alur transaksi di kasir.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Model AI apa yang berjalan di handset?</summary>
+          <p>STT: Whisper-tiny terkompilasi ONNX (sekitar 39 MB int8). Intent parser: small language model (Phi-3-mini int4 atau Llama-3.2-1B) lewat QVAC SDK. OCR (roadmap): PaddleOCR-mobile-int8. Total footprint &lt; 100 MB. Akselerasi via CoreML (iOS) atau NNAPI (Android).</p>
+        </details>
+        <details class="faq-item">
+          <summary>Bagaimana dengan privasi data customer?</summary>
+          <p>Audio customer tidak pernah meninggalkan handset Anda — itu jaminan arsitektur, bukan janji marketing. Tidak ada API call ke OpenAI/Google/AWS untuk pemrosesan AI. Yang dikirim ke server PAYO hanyalah data transaksi terenkripsi (jumlah, timestamp, address) — tidak ada audio, tidak ada gambar mentah.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Apakah PAYO mendukung QRIS standar Bank Indonesia?</summary>
+          <p>Versi production akan menggunakan format EMV-CRC16-CCITT-FALSE sesuai spec QRIS BI sehingga QR yang dihasilkan dapat di-scan oleh seluruh aplikasi pembayaran terdaftar di Indonesia (GoPay, OVO, Dana, ShopeePay, m-banking, dst.).</p>
+        </details>
+        <details class="faq-item">
+          <summary>Apakah saya butuh hardware POS khusus?</summary>
+          <p>Tidak. PAYO berjalan di smartphone Android atau iOS yang sudah Anda miliki. Cukup install aplikasi, login sebagai merchant, dan terminal POS Anda siap dalam 5 menit.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Berapa biaya per-transaksi?</summary>
+          <p>Selama beta: gratis. Withdraw ke bank dikenai biaya admin 0,5% (paling kompetitif di pasar). Untuk pemrosesan AI on-device: <strong>nol biaya</strong> berapa pun volume Anda — model sudah include di app.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Apakah mendukung Bahasa Indonesia natural?</summary>
+          <p>Ya. Voice engine kami dilatih khusus untuk Bahasa Indonesia natural termasuk angka informal ("juta", "ribu", "setengah juta"), nama orang Indonesia, dan struktur kalimat lokal seperti "tolong tarik 500 ribu ke rekening BCA punya saya".</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== CTA ============== -->
+  <section class="cta" id="cta">
+    <div class="container cta-inner" data-reveal>
+      <div class="cta-glow" aria-hidden="true"></div>
+      <span class="eyebrow">Segera Hadir</span>
+      <h2>Jadilah yang pertama mencoba<br/><span class="grad">POS masa depan.</span></h2>
+      <p class="cta-sub">Daftar early access sekarang dan dapatkan akses prioritas saat peluncuran. Gratis, tanpa komitmen.</p>
+      
+      <form class="waitlist-form" id="waitlistForm">
+        <div class="form-row">
+          <input type="text" name="name" placeholder="Nama lengkap" required class="form-input" />
+          <input type="email" name="email" placeholder="Email bisnis Anda" required class="form-input" />
+        </div>
+        <div class="form-row">
+          <input type="tel" name="phone" placeholder="Nomor WhatsApp (opsional)" class="form-input" />
+          <select name="business_type" class="form-input">
+            <option value="">Jenis usaha (opsional)</option>
+            <option value="retail">Retail / Toko</option>
+            <option value="fnb">F&B / Kuliner</option>
+            <option value="service">Jasa</option>
+            <option value="event">Event / Tiket</option>
+            <option value="other">Lainnya</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-xl btn-submit">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Daftar Early Access
+        </button>
+      </form>
+      
+      <div class="cta-trust">
+        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 100% Gratis mendaftar</span>
+        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Tidak ada spam</span>
+        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Akses prioritas</span>
+      </div>
+      
+      <p class="waitlist-count">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span><strong>500+</strong> merchant sudah mendaftar waitlist</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============== FOOTER ============== -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#hero" class="logo logo-footer">
+          <svg class="logo-mark" viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="50" r="46" fill="currentColor"/>
+            <path d="M30 35h40M50 35v35" stroke="#0F2A26" stroke-width="10" stroke-linecap="round" fill="none"/>
+          </svg>
+          <span class="logo-text">PAYO</span>
+        </a>
+        <p>POS pembayaran cerdas untuk merchant Indonesia. AI 100% on-device, privacy-first, offline-first.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Produk</h5>
+        <a href="#fitur">Fitur</a>
+        <a href="#cara-kerja">Cara Kerja</a>
+        <a href="#on-device">On-Device AI</a>
+        <a href="#cta">Download</a>
+      </div>
+      <div class="footer-col">
+        <h5>Perusahaan</h5>
+        <a href="#">Tentang</a>
+        <a href="#">Karir</a>
+        <a href="#">Kontak</a>
+        <a href="#">Blog</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privasi</a>
+        <a href="#">Syarat</a>
+        <a href="#">UU PDP</a>
+        <a href="#">Keamanan</a>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>© 2026 PAYO. Dibuat dengan ❤ di Indonesia.</p>
+      <p>v1.0 · Beta</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
